@@ -1,15 +1,13 @@
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
-import UserContext from "../UserContext.js";
+import UserContext from "../context/UserContext.js";
 import ConfirmationModal from "./ConfirmationModal.js";
 export default function AppNavBar() {
-  const { user } = useContext(UserContext);
-
-  console.log(user);
-
+  const navigate = useNavigate();
+  const { user, removeUser, isAdmin } = useContext(UserContext);
   const [showLogout, setShowLogout] = useState(false);
 
   const handleLogoutClick = () => {
@@ -33,9 +31,15 @@ export default function AppNavBar() {
               Products
             </Nav.Link>
 
-            <Nav.Link as={NavLink} to="/dashboard">
-              Admin Dashboard
+            <Nav.Link as={NavLink} to="/cart">
+              Cart
             </Nav.Link>
+
+            {isAdmin && (
+              <Nav.Link as={NavLink} to="/dashboard">
+                Admin Dashboard
+              </Nav.Link>
+            )}
 
             {user !== null ? (
               <>
@@ -61,6 +65,10 @@ export default function AppNavBar() {
           toggleConfirmationModal={() => setShowLogout(!showLogout)}
           modalConfirmationQuestion={"Are you sure you want to logout?"}
           modalTitle={"Logout"}
+          confirmationCallback={() => {
+            removeUser();
+            navigate("/");
+          }}
         />
       )}
     </Navbar>

@@ -1,50 +1,44 @@
-import React, { useState, useEffect, useContext } from "react";
+import React from "react";
 import { Button, Modal } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import UserContext from "../UserContext";
 
-export default function ConfirmationModal({
-  toggleConfirmationModal,
-  modalTitle,
-  modalConfirmationQuestion,
-}) {
-  const { removeUser } = useContext(UserContext);
-  const navigate = useNavigate();
-  const [show, setShow] = useState(false);
+const ConfirmationModal = React.memo(
+  ({
+    toggleConfirmationModal,
+    modalTitle,
+    modalConfirmationQuestion,
+    confirmationCallback,
+  }) => {
+    const handleClose = () => {
+      toggleConfirmationModal();
+    };
 
-  const handleClose = () => {
-    setShow(false);
-    toggleConfirmationModal();
-  };
+    const handleConfirmation = () => {
+      handleClose();
 
-  const handleShow = () => setShow(true);
+      confirmationCallback();
+    };
 
-  useEffect(() => {
-    handleShow();
-  }, []);
+    return (
+      <div>
+        <Modal show={true} onHide={handleClose}>
+          {modalTitle && (
+            <Modal.Header closeButton>
+              <Modal.Title>{modalTitle}</Modal.Title>
+            </Modal.Header>
+          )}
+          <Modal.Body>{modalConfirmationQuestion}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              No
+            </Button>
+            <Button variant="primary" onClick={handleConfirmation}>
+              Yes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    );
+  }
+);
 
-  const handleLogout = () => {
-    removeUser();
-    handleClose();
-    navigate("/login");
-  };
-
-  return (
-    <div>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{modalTitle}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{modalConfirmationQuestion}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            No
-          </Button>
-          <Button variant="primary" onClick={handleLogout}>
-            Yes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
-  );
-}
+export default ConfirmationModal;

@@ -1,55 +1,61 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import UserContext from "../context/UserContext";
+import { RESPONSE_STATUS } from "../utils/Contants";
 
 export default function UpdateModal(props) {
-  const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   const [name, setName] = useState(props.product.name);
   const [description, setDescription] = useState(props.product.description);
   const [price, setPrice] = useState(props.product.price);
-  const [quantity, setQuantity] = useState(props.product.quantity);
+  const [stock, setStock] = useState(props.product.stock);
 
-  const updateProduct = (event) => {
+  const updateProduct = async (event) => {
     event.preventDefault();
 
-    fetch(`http://localhost:4000/products/${props.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-      body: JSON.stringify({
-        name: name,
-        description: description,
-        price: price,
-        quantity: quantity,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.id) {
-          Swal.fire({
-            title: "Product Updated!",
-            icon: "success",
-            text: "Product has been updated",
-          });
-          navigate("/adminDashboard");
-        } else {
-          Swal.fire({
-            title: "Product Update Failed!",
-            icon: "error",
-            text: "Product has not been updated",
-          });
+    try {
+      const response = await fetch(
+        `http://localhost:4000/products/update/${props.product._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user}`,
+          },
+          body: JSON.stringify({
+            name: name,
+            description: description,
+            price: price,
+            stock: stock,
+          }),
         }
-      })
-      .catch(() =>
-        Swal.fire({
-          title: "Can't connect to server, please try again later!",
-          icon: "info",
-        })
       );
+
+      const data = await response.json();
+
+      if (data.status === RESPONSE_STATUS.SUCCESS) {
+        Swal.fire({
+          title: "Product Updated!",
+          icon: "success",
+          text: "Product has been updated",
+        });
+        props.toggleUpdateModal();
+        props.refetchProducts();
+      } else {
+        Swal.fire({
+          title: "Product Update Failed!",
+          icon: "error",
+          text: "Product has not been updated",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Can't connect to server, please try again later!",
+        icon: "info",
+      });
+    }
   };
 
   return (
@@ -91,12 +97,12 @@ export default function UpdateModal(props) {
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Quantity</Form.Label>
+              <Form.Label>Stock</Form.Label>
               <Form.Control
                 type="number"
-                placeholder="Enter product quantity"
-                value={quantity}
-                onChange={(event) => setQuantity(event.target.value)}
+                placeholder="Enter product stock"
+                value={stock}
+                onChange={(event) => setStock(event.target.value)}
                 required
               />
             </Form.Group>
@@ -108,7 +114,7 @@ export default function UpdateModal(props) {
                 name === "" ||
                 description === "" ||
                 price === "" ||
-                quantity === ""
+                stock === ""
               }
             >
               Update

@@ -1,65 +1,63 @@
 import { Form, Button, Container, Col, Row } from "react-bootstrap";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import Swal from "sweetalert2";
-import UserContext from "../UserContext.js";
+import UserContext from "../context/UserContext.js";
 import { Navigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isActive, setIsActive] = useState(false);
 
   const { user, updateUser } = useContext(UserContext);
 
-  // const { user, setUser } = useContext(UserContext);
+  /**
+   * Flag that determines if the email and password are both non-empty.
+   * We use this for disabling and enabling the button.
+   *
+   * @type {boolean}
+   */
+  const isActive = email !== "" && password !== "";
 
-  useEffect(() => {
-    if (email !== "" && password !== "") {
-      setIsActive(false);
-    } else {
-      setIsActive(true);
-    }
-  }, [email, password]);
-
-  function authenticate(event) {
+  async function authenticate(event) {
     event.preventDefault();
 
-    fetch("http://localhost:4000/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.accessToken) {
-          updateUser(data.accessToken);
-          Swal.fire({
-            title: "Login Succesfull",
-            icon: "success",
-            text: "Welcome to Quickify!",
-          });
-        } else {
-          Swal.fire({
-            title: "Authentication Failed",
-            icon: "error",
-            text: "Check your credentials",
-          });
-        }
-      })
-      .catch(() =>
-        Swal.fire({
-          title: "Can't connect to server, please try again later!",
-          icon: "info",
-        })
-      );
+    try {
+      const response = await fetch("http://localhost:4000/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
 
-    setEmail("");
-    setPassword("");
+      const data = await response.json();
+
+      if (data.accessToken) {
+        // Update the user context with the new user data and set the token and isAdmin in localStorage
+        updateUser(data);
+        Swal.fire({
+          title: "Login Succesfull",
+          icon: "success",
+          text: "Welcome to Quickify!",
+        });
+        setEmail("");
+        setPassword("");
+      } else {
+        Swal.fire({
+          title: "Authentication Failed",
+          icon: "error",
+          text: "Check your credentials",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Can't connect to server, please try again later!",
+        icon: "info",
+      });
+    }
   }
 
   return user ? (
@@ -93,10 +91,10 @@ export default function Login() {
             </Form.Group>
 
             <Button
-              variant="primary"
+              variant={isActive ? "primary" : "dark"}
               type="submit"
               id="submitBtn"
-              disabled={isActive}
+              disabled={!isActive}
             >
               Login
             </Button>

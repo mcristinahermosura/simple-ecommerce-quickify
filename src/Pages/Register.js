@@ -36,7 +36,6 @@ export default function Register() {
     })
       .then((result) => result.json())
       .then((data) => {
-        console.log(data);
         if (data) {
           Swal.fire({
             title: "Thank you for registering",
