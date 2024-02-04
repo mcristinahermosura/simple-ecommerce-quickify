@@ -7,7 +7,7 @@ export default function Products() {
   const navigate = useNavigate();
   const { products } = useRetrieveProducts();
 
-  //generate a function when the user clicks the button details it will redirect to the product details page using the product id as a parameter in the url
+  
   const viewProduct = (e, id) => {
     e.preventDefault();
 
