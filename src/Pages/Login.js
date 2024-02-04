@@ -1,8 +1,9 @@
 import { Form, Button, Container, Col, Row } from "react-bootstrap";
 import { useState, useContext } from "react";
 import Swal from "sweetalert2";
-import UserContext from "../context/UserContext.js";
+import {UserContext} from "../context/UserContext.js";
 import { Navigate } from "react-router-dom";
+import { loginUser } from "../api/index.js";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -18,22 +19,14 @@ export default function Login() {
    */
   const isActive = email !== "" && password !== "";
 
-  async function authenticate(event) {
+  const authenticate = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:4000/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
+      const data = await loginUser({
+        email: email,
+        password: password,
       });
-
-      const data = await response.json();
 
       if (data.accessToken) {
         // Update the user context with the new user data and set the token and isAdmin in localStorage
@@ -58,7 +51,7 @@ export default function Login() {
         icon: "info",
       });
     }
-  }
+  };
 
   return user ? (
     <Navigate to="/" />

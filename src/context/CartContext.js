@@ -1,59 +1,82 @@
-import { createContext } from "react";
+import { createContext, useContext, useState } from "react";
+import React from "react";
+import { ConfirmationModalContext } from "./AppModalManagerContext";
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const getStoredCart = () => JSON.parse(localStorage.getItem("cart"));
-  let storedCart = getStoredCart();
+  const { openModal } = useContext(ConfirmationModalContext);
+  const getStoredCart = () => JSON.parse(localStorage.getItem("cart") ?? "[]");
+
+  const [cart, setCart] = useState(getStoredCart());
+
+  const updateCart = (updatedCart) => {
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    setCart(updatedCart);
+  };
 
   const addItem = (item) => {
-    const cart = storedCart ? JSON.parse(storedCart) : [];
-    const updatedCart = [...cart, item];
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    storedCart = getStoredCart();
+    const existingItem = cart.find((cartItem) => cartItem._id === item._id);
+
+    if (existingItem) {
+      const updatedCart = cart.map((cartItem) => {
+        if (cartItem._id === item._id) {
+          return { ...cartItem, quantity: cartItem.quantity + 1 };
+        }
+        return cartItem;
+      });
+
+      updateCart(updatedCart);
+    } else {
+      const updatedCart = [...cart, { ...item, quantity: 1 }];
+      updateCart(updatedCart);
+    }
   };
 
   const removeItem = (item) => {
-    const cart = storedCart ? storedCart : [];
-    const updatedCart = cart.filter((cartItem) => cartItem.id !== item.id);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    storedCart = getStoredCart();
+    const updatedCart = cart.filter((cartItem) => cartItem._id !== item._id);
+    updateCart(updatedCart);
   };
 
   const increase = (item) => {
-    const cart = JSON.parse(getStoredCart());
     const updatedCart = cart.map((cartItem) => {
-      if (cartItem.id === item.id) {
-        return { ...cartItem, order: cartItem.order + 1 };
+      if (cartItem._id === item._id) {
+        return { ...cartItem, quantity: cartItem.quantity + 1 };
       }
       return cartItem;
     });
 
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    storedCart = JSON.parse(getStoredCart());
+    updateCart(updatedCart);
   };
 
   const decrease = (item) => {
-    const cart = storedCart ? JSON.parse(storedCart) : [];
     const updatedCart = cart.map((cartItem) => {
-      if (cartItem.id === item.id) {
+      if (cartItem._id === item._id && cartItem.quantity > 1) {
         return { ...cartItem, quantity: cartItem.quantity - 1 };
       }
+      if (cartItem._id === item._id && cartItem.quantity === 1) {
+        openModal({
+          message: "Are you sure you want to remove this item?",
+          onConfirm: () => removeItem(item),
+          onCancel: () => {},
+        });
+      }
+
       return cartItem;
     });
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    storedCart = JSON.parse(getStoredCart());
+    const filteredCart = updatedCart.filter((cartItem) => cartItem !== null);
+    updateCart(filteredCart);
   };
 
   const clearCart = () => {
     localStorage.removeItem("cart");
-    storedCart = [];
+    setCart([]);
   };
 
   return (
     <CartContext.Provider
       value={{
-        storedCart,
+        cart,
         addItem,
         removeItem,
         increase,

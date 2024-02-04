@@ -21,44 +21,37 @@ export default function Register() {
     }
   }, [email, password, verifyPassword]);
 
-  function registerUser(event) {
+  const registerUser = async (event) => {
     event.preventDefault();
 
-    fetch("http://localhost:4000/users/signUp", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    try {
+      const data = await registerUser({
         email: email,
         password: password,
-      }),
-    })
-      .then((result) => result.json())
-      .then((data) => {
-        if (data) {
-          Swal.fire({
-            title: "Thank you for registering",
-            icon: "success",
-          });
+      });
 
-          setEmail("");
-          setPassword("");
-          setVerifyPassword("");
-        } else {
-          Swal.fire({
-            title: "Already registered. Please use another email!",
-            icon: "error",
-          });
-        }
-      })
-      .catch(() =>
+      if (data) {
         Swal.fire({
-          title: "Can't connect to server, please try again later!",
-          icon: "info",
-        })
-      );
-  }
+          title: "Thank you for registering",
+          icon: "success",
+        });
+
+        setEmail("");
+        setPassword("");
+        setVerifyPassword("");
+      } else {
+        Swal.fire({
+          title: "Already registered. Please use another email!",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Can't connect to server, please try again later!",
+        icon: "info",
+      });
+    }
+  };
 
   return (
     <Container>

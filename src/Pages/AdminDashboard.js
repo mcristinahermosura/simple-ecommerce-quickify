@@ -4,8 +4,10 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UpdateModal from "../components/UpdateModal";
 import ConfirmationModal from "../components/ConfirmationModal";
-import UserContext from "../context/UserContext";
+import { UserContext } from "../context/UserContext";
 import Swal from "sweetalert2";
+import { updateProductStatus } from "../api";
+import { RESPONSE_STATUS } from "../utils/Contants";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -28,21 +30,9 @@ export default function AdminDashboard() {
 
   const updateProductAvailability = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:4000/products/updateStatus/${product._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user}`,
-          },
-          body: JSON.stringify({
-            isActive: !product.isActive,
-          }),
-        }
-      );
+      const res = await updateProductStatus(product, user);
 
-      if (!res.ok) {
+      if (res.status !== RESPONSE_STATUS.SUCCESS) {
         Swal.fire({
           title: "Failed to update product availability",
           icon: "error",
@@ -67,7 +57,7 @@ export default function AdminDashboard() {
       <h1 className=" p-5 text-center">Admin Dashboard</h1>
       <div className="d-grid gap-2 d-flex justify-content-center pb-4">
         <Button
-          onClick={() => navigate("/addProduct")}
+          onClick={() => navigate("/add-product")}
           variant="primary"
           size="sm"
         >

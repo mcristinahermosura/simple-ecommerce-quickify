@@ -3,20 +3,15 @@ import { CartContext } from "../context/CartContext";
 import { Button, Container, Table } from "react-bootstrap";
 import { Plus, Dash } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
-import ConfirmationModal from "../components/ConfirmationModal";
 import { ACTION } from "../utils/Contants";
+import { ConfirmationModalContext } from "../context/AppModalManagerContext";
 
 export default function Cart() {
-  const {
-    storedCart = [],
-    removeItem,
-    increase,
-    decrease,
-  } = useContext(CartContext);
+  const { cart, removeItem, increase, decrease } = useContext(CartContext);
+  const { openModal } = useContext(ConfirmationModalContext);
   const [show, setShow] = useState(false);
   const [item, setItem] = useState({});
   const [usage, setUsage] = useState(ACTION.remove);
-  const [cart, setTest] = useState(storedCart);
 
   // This function is for the modal to show the confirmation modal
   const toggleConfirmationModal = () => {
@@ -56,11 +51,11 @@ export default function Cart() {
         <tbody>
           {cart && cart.length > 0 ? (
             cart.map((item, index) => (
-              <tr key={index}>
+              <tr key={index} className="text-center">
                 <td>{item.name}</td>
-                <td>{item.price}</td>
+                <td>₱{item.price.toFixed(2)}</td>
                 <td>
-                  <div className="d-flex align-items-center">
+                  <div className="d-flex align-items-center justify-content-center ">
                     <Button
                       variant="outline-secondary"
                       onClick={() => {
@@ -87,7 +82,7 @@ export default function Cart() {
                     </Button>
                   </div>
                 </td>
-                <td>{item.price * item.quantity}</td>
+                <td>₱{(item.price * item.quantity).toFixed(2)}</td>
                 <td>
                   <Button
                     variant="outline-danger"
@@ -120,55 +115,23 @@ export default function Cart() {
           </Button>
         </Link>
         <h3>
-          Total:{" "}
+          Total: ₱
           {cart && cart.length > 0
-            ? cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
+            ? cart
+                .reduce((acc, item) => acc + item.price * item.quantity, 0)
+                .toFixed(2)
             : 0}
         </h3>
       </div>
-      {show && (
-        <ConfirmationModal
-          // This function handles two different actions, so we need to pass the usage to the modal
-          confirmationCallback={() => handleModalConfirmation(usage)}
-          modalConfirmationQuestion={
+      {show &&
+        openModal({
+          message:
             usage === ACTION.remove
               ? "Are you sure you want to remove this item?"
-              : "Are you sure you want to checkout?"
-          }
-          toggleConfirmationModal={toggleConfirmationModal}
-        />
-      )}
-      <div className="gap-5 d-flex">
-        <Button
-          onClick={() =>
-            localStorage.setItem(
-              "cart",
-              JSON.stringify([
-                {
-                  _id: "659bf07d022610077809bbc8",
-                  name: "Tea Tree Facial Wash 250ml",
-                  description:
-                    "Our Tea Tree Skin Clearing Facial Wash, infused with Community Trade t...",
-                  price: 699,
-                  isActive: false,
-                  quantity: 0,
-                },
-              ])
-            )
-          }
-        >
-          {" "}
-          Add product to localStorage
-        </Button>
-        <Button
-          onClick={() => {
-            const parsedArray = JSON.parse(localStorage.getItem("cart"));
-            setTest(parsedArray);
-          }}
-        >
-          Add Sample Product to Cart
-        </Button>
-      </div>
+              : "Are you sure you want to checkout?",
+          onConfirm: () => handleModalConfirmation(usage),
+          onCancel: toggleConfirmationModal,
+        })}
     </Container>
   );
 }

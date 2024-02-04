@@ -2,17 +2,17 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useState, useContext } from "react";
-import UserContext from "../context/UserContext.js";
-import ConfirmationModal from "./ConfirmationModal.js";
+import {  useContext } from "react";
+
+import { ConfirmationModalContext } from "../context/AppModalManagerContext.js";
+import { UserContext } from "../context/UserContext.js";
+import { Badge } from "react-bootstrap";
+import { CartContext } from "../context/CartContext.js";
 export default function AppNavBar() {
+  const { cart } = useContext(CartContext);
+  const { openModal } = useContext(ConfirmationModalContext);
   const navigate = useNavigate();
   const { user, removeUser, isAdmin } = useContext(UserContext);
-  const [showLogout, setShowLogout] = useState(false);
-
-  const handleLogoutClick = () => {
-    setShowLogout(true);
-  };
 
   return (
     <Navbar expand="lg" className="bg-light">
@@ -31,10 +31,17 @@ export default function AppNavBar() {
               Products
             </Nav.Link>
 
-            <Nav.Link as={NavLink} to="/cart">
-              Cart
+            <Nav.Link as={NavLink} to="/cart" className="position-relative">
+              Cart{" "}
+              {cart?.length > 0 && (
+                <Badge
+                  bg="dark"
+                  className="position-absolute top-20 right-20 translate-middle rounded-circle"
+                >
+                  {cart?.length}
+                </Badge>
+              )}
             </Nav.Link>
-
             {isAdmin && (
               <Nav.Link as={NavLink} to="/dashboard">
                 Admin Dashboard
@@ -43,7 +50,19 @@ export default function AppNavBar() {
 
             {user !== null ? (
               <>
-                <Nav.Link as={NavLink} onClick={handleLogoutClick}>
+                <Nav.Link
+                  as={NavLink}
+                  onClick={() =>
+                    openModal({
+                      message: "Are you sure you want to logout?",
+                      onConfirm: () => {
+                        removeUser();
+                        navigate("/");
+                      },
+                      onCancel: () => {},
+                    })
+                  }
+                >
                   Logout
                 </Nav.Link>
               </>
@@ -60,17 +79,6 @@ export default function AppNavBar() {
           </Nav>
         </Navbar.Collapse>
       </Container>
-      {showLogout && (
-        <ConfirmationModal
-          toggleConfirmationModal={() => setShowLogout(!showLogout)}
-          modalConfirmationQuestion={"Are you sure you want to logout?"}
-          modalTitle={"Logout"}
-          confirmationCallback={() => {
-            removeUser();
-            navigate("/");
-          }}
-        />
-      )}
     </Navbar>
   );
 }

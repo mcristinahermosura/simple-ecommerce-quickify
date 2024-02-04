@@ -1,30 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import swal from "sweetalert2";
+import { UserContext } from "../../context/UserContext";
+import { createProduct } from "../../api";
 
 const ProductCreation = () => {
+  const { user } = useContext(UserContext);
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productQuantity, setProductQuantity] = useState("");
-
-  const createProduct = async (product) => {
-    // Store this on .env
-    const TOKEN =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OWJlMDg0YjhmM2E1Y2QyY2FkNmQyMSIsImVtYWlsIjoiYWRtaW50ZnNAZ21haWwuY29tIiwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNzA0NzE2NDA3fQ.pSE0z9ciTAjwo6ECrqr5i_PTX1IbOl_9PCJhSTDwYjc";
-
-    // Make api url be stored in .env
-    const response = await fetch("http://localhost:4000/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${TOKEN}`,
-      },
-      body: JSON.stringify(product),
-    });
-
-    return response.json();
-  };
 
   const handleProductCreation = async () => {
     try {
@@ -35,15 +20,12 @@ const ProductCreation = () => {
         quantity: productQuantity,
       };
 
-      const data = await createProduct(productData);
+      const data = await createProduct(productData, user);
 
       if (data?.error && data.error.length > 0) {
         swal.fire("Error", data.error, "error");
       } else {
         swal.fire("Success", "Product created successfully", "success");
-
-        // Redirect to product list page after creation of product successfully
-        // Add the necessary code here
       }
     } catch (error) {
       swal.fire("Error", "Failed to create product", "error");
@@ -55,7 +37,7 @@ const ProductCreation = () => {
       <Row>
         <Col className="col-9 p-3 mx-auto shadow-lg rounded">
           <h3 className="mb-3">Add Product</h3>
-          <Form >
+          <Form>
             <Form.Group controlId="productName">
               <Form.Label>Product Name</Form.Label>
               <Form.Control

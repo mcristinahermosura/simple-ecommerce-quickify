@@ -1,44 +1,26 @@
 import React from "react";
-import { Button, Modal } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
-const ConfirmationModal = React.memo(
-  ({
-    toggleConfirmationModal,
-    modalTitle,
-    modalConfirmationQuestion,
-    confirmationCallback,
-  }) => {
-    const handleClose = () => {
-      toggleConfirmationModal();
-    };
+const ConfirmationModalContent = ({ show, message, onConfirm, onCancel }) => {
+  return (
+    <Modal show={show} onHide={onCancel}>
+      <Modal.Header closeButton>
+        <Modal.Title>Confirmation</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>{message}</p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={onConfirm}>
+          Confirm
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
 
-    const handleConfirmation = () => {
-      handleClose();
-
-      confirmationCallback();
-    };
-
-    return (
-      <div>
-        <Modal show={true} onHide={handleClose}>
-          {modalTitle && (
-            <Modal.Header closeButton>
-              <Modal.Title>{modalTitle}</Modal.Title>
-            </Modal.Header>
-          )}
-          <Modal.Body>{modalConfirmationQuestion}</Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              No
-            </Button>
-            <Button variant="primary" onClick={handleConfirmation}>
-              Yes
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
-    );
-  }
-);
-
-export default ConfirmationModal;
+export default ConfirmationModalContent;

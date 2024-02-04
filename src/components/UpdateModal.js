@@ -1,8 +1,9 @@
 import React, { useContext, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import Swal from "sweetalert2";
-import UserContext from "../context/UserContext";
+import { UserContext } from "../context/UserContext";
 import { RESPONSE_STATUS } from "../utils/Contants";
+import { updateProductDetails } from "../api";
 
 export default function UpdateModal(props) {
   const { user } = useContext(UserContext);
@@ -16,24 +17,7 @@ export default function UpdateModal(props) {
     event.preventDefault();
 
     try {
-      const response = await fetch(
-        `http://localhost:4000/products/update/${props.product._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user}`,
-          },
-          body: JSON.stringify({
-            name: name,
-            description: description,
-            price: price,
-            stock: stock,
-          }),
-        }
-      );
-
-      const data = await response.json();
+      const data = await updateProductDetails(props.product, user);
 
       if (data.status === RESPONSE_STATUS.SUCCESS) {
         Swal.fire({
