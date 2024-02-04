@@ -1,1 +1,0 @@
-// Generate an order schema for the cart items. The order schema should contain the following properties: 

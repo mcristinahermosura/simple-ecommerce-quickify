@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Container, Row, Col, Button } from "react-bootstrap";
-import useRetrieveProducts from "../hooks/useRetrieveProducts";
+import useRetrieveProducts from "../../hooks/useRetrieveProducts";
 
 export default function Products() {
   const { products } = useRetrieveProducts();
