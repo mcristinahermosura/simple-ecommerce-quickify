@@ -17,7 +17,16 @@ export default function UpdateModal(props) {
     event.preventDefault();
 
     try {
-      const data = await updateProductDetails(props.product, user);
+      const data = await updateProductDetails(
+        {
+          ...props.product,
+          name: name,
+          description: description,
+          price: price,
+          stock: stock,
+        },
+        user
+      );
 
       if (data.status === RESPONSE_STATUS.SUCCESS) {
         Swal.fire({

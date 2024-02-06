@@ -3,7 +3,6 @@ import useRetrieveProducts from "../hooks/useRetrieveProducts";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UpdateModal from "../components/UpdateModal";
-import ConfirmationModal from "../components/ConfirmationModal";
 import { UserContext } from "../context/UserContext";
 import Swal from "sweetalert2";
 import { updateProductStatus } from "../api";
@@ -12,23 +11,16 @@ import { RESPONSE_STATUS } from "../utils/Contants";
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const { isAdmin, user } = useContext(UserContext);
-
   const { products, refetchProducts } = useRetrieveProducts();
 
   const [updateModal, setUpdateModal] = useState(false);
-  const [showDisableModal, setShowDisableModal] = useState(false);
-  const [productStatusFlag, setProductStatusFlag] = useState(false);
   const [product, setProduct] = useState({});
-
-  const toggleDisableModal = () => {
-    setShowDisableModal(!showDisableModal);
-  };
 
   const toggleUpdateModal = () => {
     setUpdateModal(!updateModal);
   };
 
-  const updateProductAvailability = async () => {
+  const updateProductAvailability = async (product) => {
     try {
       const res = await updateProductStatus(product, user);
 
@@ -101,9 +93,16 @@ export default function AdminDashboard() {
                   <Button
                     variant={product.isActive ? "danger" : "success"}
                     onClick={() => {
-                      toggleDisableModal();
-                      setProductStatusFlag(product.isActive);
-                      setProduct(product);
+                      Swal.fire({
+                        title: `Are you sure you want to ${
+                          product.isActive ? "disable" : "enable"
+                        } this product?`,
+                        icon: "warning",
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                          updateProductAvailability(product);
+                        }
+                      });
                     }}
                   >
                     {product.isActive ? "Disable" : "Enable"}
@@ -120,16 +119,6 @@ export default function AdminDashboard() {
           toggleUpdateModal={toggleUpdateModal}
           updateCallback={updateProductAvailability}
           refetchProducts={refetchProducts}
-        />
-      )}
-      {showDisableModal && (
-        <ConfirmationModal
-          modalConfirmationQuestion={`Are you sure you want to ${
-            productStatusFlag ? "disable" : "enable"
-          } this product? `}
-          modalTitle={""}
-          toggleConfirmationModal={toggleDisableModal}
-          confirmationCallback={updateProductAvailability}
         />
       )}
     </Container>

@@ -1,11 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 import React from "react";
-import { ConfirmationModalContext } from "./AppModalManagerContext";
+import Swal from "sweetalert2";
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { openModal } = useContext(ConfirmationModalContext);
   const getStoredCart = () => JSON.parse(localStorage.getItem("cart") ?? "[]");
 
   const [cart, setCart] = useState(getStoredCart());
@@ -36,6 +35,12 @@ export const CartProvider = ({ children }) => {
   const removeItem = (item) => {
     const updatedCart = cart.filter((cartItem) => cartItem._id !== item._id);
     updateCart(updatedCart);
+    Swal.fire({
+      title: "Item removed",
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false,
+    });
   };
 
   const increase = (item) => {
@@ -55,10 +60,16 @@ export const CartProvider = ({ children }) => {
         return { ...cartItem, quantity: cartItem.quantity - 1 };
       }
       if (cartItem._id === item._id && cartItem.quantity === 1) {
-        openModal({
-          message: "Are you sure you want to remove this item?",
-          onConfirm: () => removeItem(item),
-          onCancel: () => {},
+        Swal.fire({
+          title: "Are you sure you want to remove this item from your cart?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            removeItem(item);
+          }
         });
       }
 

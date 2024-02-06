@@ -19,5 +19,8 @@ export const ENDPOINT = Object.freeze({
   USER_LOGIN: "users/login",
   USER_DETAILS: "users/details",
   ORDER_CHECKOUT: "orders/checkout",
-  ORDER_HISTORY: "orders/history",
+  ORDER: "orders",
+  ORDER_ALL: "orders/all",
+  ORDER_CANCEL: "orders/cancel-order",
+  ORDER_UPDATE_STATUS: "orders/update-status",
 });

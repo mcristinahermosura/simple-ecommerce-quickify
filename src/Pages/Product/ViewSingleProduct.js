@@ -65,7 +65,13 @@ export default function ViewSingleProduct() {
                       "Oops! You need to log in before adding items to your cart.",
                     icon: "info",
                   })
-                : addItem(product)
+                : (addItem(product),
+                  Swal.fire({
+                    title: "Item added to cart",
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false,
+                  }))
             }
             disabled={product.stock === 0}
           >

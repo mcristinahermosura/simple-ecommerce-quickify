@@ -1,38 +1,49 @@
 import React, { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
-import { Button, Container, Table } from "react-bootstrap";
+import { Button, Container, Form, Table } from "react-bootstrap";
 import { Plus, Dash } from "react-bootstrap-icons";
-import { Link } from "react-router-dom";
-import { ACTION } from "../utils/Contants";
-import { ConfirmationModalContext } from "../context/AppModalManagerContext";
+import { Link, useNavigate } from "react-router-dom";
+
+import Swal from "sweetalert2";
+import { OrderContext } from "../context/OrderContext";
 
 export default function Cart() {
-  const { cart, removeItem, increase, decrease } = useContext(CartContext);
-  const { openModal } = useContext(ConfirmationModalContext);
-  const [show, setShow] = useState(false);
-  const [item, setItem] = useState({});
-  const [usage, setUsage] = useState(ACTION.remove);
+  const { cart, removeItem, increase, decrease, clearCart } =
+    useContext(CartContext);
+  const id = JSON.parse(localStorage.getItem("id"));
+  const { checkout } = useContext(OrderContext);
+  const [shippingAddress, setShippingAddress] = useState("");
+  const navigate = useNavigate();
 
-  // This function is for the modal to show the confirmation modal
-  const toggleConfirmationModal = () => {
-    setShow(!show);
-  };
+  const handleCheckout = (e) => {
+    e.preventDefault();
+    const order = {
+      userId: id,
+      orders: cart.map((item) => ({
+        productId: item._id,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.price * item.quantity,
+      })),
+      totalAmount: cart
+        .reduce((acc, item) => acc + item.price * item.quantity, 0)
+        .toFixed(2),
+      shippingAddress: shippingAddress,
+      paymentMethod: "Cash On Delivery",
+    };
 
-  /**
-   * Handles the confirmation action for the modal.
-   * @param {string} usage - The usage of the modal (remove or checkout).
-   * @returns {void}
-   */
-  const handleModalConfirmation = (usage) => {
-    if (usage === ACTION.remove) {
-      removeItem(item);
-    }
-    if (usage === ACTION.checkout) {
-      // api call
-      // go to order page
-      return;
-    }
-    toggleConfirmationModal();
+    Swal.fire({
+      title: "Are you sure you want to checkout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        checkout(order, navigate);
+        clearCart();
+      }
+    });
   };
 
   return (
@@ -60,8 +71,17 @@ export default function Cart() {
                       variant="outline-secondary"
                       onClick={() => {
                         if (item.quantity === "1") {
-                          toggleConfirmationModal();
-                          setItem(item);
+                          Swal.fire({
+                            title: "Are you sure you want to remove this item?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Yes",
+                            cancelButtonText: "No",
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              removeItem(item);
+                            }
+                          });
                         } else {
                           decrease(item);
                         }
@@ -73,7 +93,6 @@ export default function Cart() {
                     <Button
                       variant="outline-secondary"
                       onClick={(e) => {
-                        console.log(item);
                         e.preventDefault();
                         increase(item);
                       }}
@@ -86,7 +105,19 @@ export default function Cart() {
                 <td>
                   <Button
                     variant="outline-danger"
-                    onClick={() => toggleConfirmationModal()}
+                    onClick={() =>
+                      Swal.fire({
+                        title: "Are you sure you want to remove this item?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes",
+                        cancelButtonText: "No",
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                          removeItem(item);
+                        }
+                      })
+                    }
                   >
                     Remove
                   </Button>
@@ -102,36 +133,40 @@ export default function Cart() {
           )}
         </tbody>
       </Table>
-      <div className="d-flex justify-content-end gap-5">
-        <Link to="/order">
-          <Button
-            variant="primary"
-            onClick={() => {
-              setUsage(ACTION.checkout);
-              toggleConfirmationModal();
-            }}
-          >
-            Checkout
-          </Button>
-        </Link>
-        <h3>
-          Total: ₱
-          {cart && cart.length > 0
-            ? cart
-                .reduce((acc, item) => acc + item.price * item.quantity, 0)
-                .toFixed(2)
-            : 0}
-        </h3>
+      <div className="d-flex flex-column justify-content-between">
+        <div className="card p-4 mb-3">
+          <h4 className="mb-3">Shipping Details</h4>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Shipping Address</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                onChange={(e) => setShippingAddress(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Payment Method</Form.Label>
+              <Form.Control disabled value="Cash On Delivery" />
+            </Form.Group>
+          </Form>
+        </div>
+        <div className="d-flex justify-content-end gap-5">
+          <Link to="/order">
+            <Button variant="primary" onClick={handleCheckout}>
+              Checkout
+            </Button>
+          </Link>
+          <h3>
+            Total: ₱
+            {cart && cart.length > 0
+              ? cart
+                  .reduce((acc, item) => acc + item.price * item.quantity, 0)
+                  .toFixed(2)
+              : 0}
+          </h3>
+        </div>
       </div>
-      {show &&
-        openModal({
-          message:
-            usage === ACTION.remove
-              ? "Are you sure you want to remove this item?"
-              : "Are you sure you want to checkout?",
-          onConfirm: () => handleModalConfirmation(usage),
-          onCancel: toggleConfirmationModal,
-        })}
     </Container>
   );
 }

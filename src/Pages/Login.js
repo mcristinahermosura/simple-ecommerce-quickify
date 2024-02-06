@@ -29,7 +29,6 @@ export default function Login() {
       });
 
       if (data.accessToken) {
-        // Update the user context with the new user data and set the token and isAdmin in localStorage
         updateUser(data);
         Swal.fire({
           title: "Login Succesfull",

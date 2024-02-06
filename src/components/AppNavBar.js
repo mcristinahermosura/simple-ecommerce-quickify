@@ -4,13 +4,12 @@ import Navbar from "react-bootstrap/Navbar";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {  useContext } from "react";
 
-import { ConfirmationModalContext } from "../context/AppModalManagerContext.js";
 import { UserContext } from "../context/UserContext.js";
 import { Badge } from "react-bootstrap";
 import { CartContext } from "../context/CartContext.js";
+import Swal from "sweetalert2";
 export default function AppNavBar() {
   const { cart } = useContext(CartContext);
-  const { openModal } = useContext(ConfirmationModalContext);
   const navigate = useNavigate();
   const { user, removeUser, isAdmin } = useContext(UserContext);
 
@@ -53,13 +52,19 @@ export default function AppNavBar() {
                 <Nav.Link
                   as={NavLink}
                   onClick={() =>
-                    openModal({
-                      message: "Are you sure you want to logout?",
-                      onConfirm: () => {
+                    Swal.fire({
+                      title: "Are you sure?",
+                      text: "You will be logged out",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Yes, logout",
+                    }).then((result) => {
+                      if (result.isConfirmed) {
                         removeUser();
                         navigate("/");
-                      },
-                      onCancel: () => {},
+                      }
                     })
                   }
                 >

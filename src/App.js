@@ -7,11 +7,11 @@ import ProductCreation from "./Pages/Product/AddProduct.js";
 import AdminDashboard from "./Pages/AdminDashboard.js";
 import Cart from "./Pages/Cart.js";
 
-// import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Products from "./Pages/Product/Products.js";
 import ContextProvider from "./context/ContextProvider.js";
 import ViewSingleProduct from "./Pages/Product/ViewSingleProduct.js";
+import OrderHistory from "./Pages/Order.js";
 
 function App() {
   return (
@@ -26,6 +26,7 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/dashboard" element={<AdminDashboard />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/orders" element={<OrderHistory />} />
           <Route path="/product/:id" element={<ViewSingleProduct />} />
         </Routes>
       </Router>
