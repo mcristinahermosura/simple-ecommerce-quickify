@@ -35,7 +35,7 @@ export default function Products() {
                   <Card.Text className="text-truncate">
                     {product.description}
                   </Card.Text>
-                  <Card.Text>₱ {product.price.toFixed(2)}</Card.Text>
+                  <Card.Text >₱ {product.price.toFixed(2)}</Card.Text>
                   <Card.Text>
                     {`Stock${product.stock > 1 ? "s" : ""}: ${product.stock} `}
                   </Card.Text>

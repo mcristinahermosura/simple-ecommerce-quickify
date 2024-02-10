@@ -27,10 +27,10 @@ export default function AdminDashboard() {
   }, [isAdmin, navigate]);
 
   return (
-    <Container className="py-5">
+    <Container>
       <h1
         className="titlefont p-5 text-center fw-bold"
-        style={{ letterSpacing: "0.45em" }}
+        style={{ letterSpacing: "0.35em" }}
       >
         ADMIN DASHBOARD
       </h1>
