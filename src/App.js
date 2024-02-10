@@ -1,8 +1,9 @@
-import AppNavBar from "./components/AppNavBar.js";
-import "./App.css";
-import Home from "./Pages/Home.js";
-import Login from "./Pages/Login.js";
-import Register from "./Pages/Register.js";
+import AppNavBar from "./components/AppNavBar";
+import "./Pages/Layout.css";
+
+import Home from "./Pages/Home";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
 import ProductCreation from "./Pages/Product/AddProduct.js";
 import AdminDashboard from "./Pages/Admin/AdminDashboard.js";
 import Cart from "./Pages/Cart.js";

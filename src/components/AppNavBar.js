@@ -14,7 +14,7 @@ export default function AppNavBar() {
   const { user, removeUser, isAdmin } = useContext(UserContext);
 
   return (
-    <Navbar expand="lg" className="bg-light">
+    <Navbar expand="lg" className="bg-body-secondary " >
       <Container>
         <Navbar.Brand as={Link} to={"/"} className="logo fw-bold">
           Quickify

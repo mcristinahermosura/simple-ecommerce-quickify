@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import {
   Container,
   Row,
@@ -14,7 +14,7 @@ import {
 import { OrderContext } from "../context/OrderContext";
 import { format } from "date-fns";
 import Swal from "sweetalert2";
-import NoOrder from "../assets/no-orders.png";
+import NoOrder from "../assets/images/no-orders.png";
 
 export default function OrderHistory() {
   const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));

@@ -49,10 +49,10 @@ export default function Register() {
   };
 
   return (
-    <Container>
+    <Container className="">
       <Row>
-        <h3 className="pt-5 mb-3 text-center">Register</h3>
-        <Col className="col-4 mx-auto shadow-lg rounded">
+        <h1 className=" titlefont pt-5 mb-3 text-center">Register</h1>
+        <Col className="bg-col col-4 mx-auto shadow-lg rounded">
           <Form onSubmit={(event) => registerUser(event)} className="p-3">
             <Form.Group controlId="email">
               <Form.Label>Email</Form.Label>

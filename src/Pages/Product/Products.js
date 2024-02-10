@@ -17,7 +17,7 @@ export default function Products() {
   return (
     <Container>
       <Row>
-        <h1 className=" pt-5 mb-3 text-center"> Our Product </h1>
+        <h1 className="titlefont pt-5 mb-3 text-center "> Our Product </h1>
         {products.map((product) => {
           return (
             <Col
@@ -28,7 +28,7 @@ export default function Products() {
               lg={3}
               className="mb-5"
             >
-              <Card className="h-100">
+              <Card className="bg-card h-100 shadow-lg rounded border-3" >
                 {/* <Card.Img variant="top" src={product.image} /> */}
                 <Card.Body>
                   <Card.Title>{product.name}</Card.Title>
@@ -42,7 +42,7 @@ export default function Products() {
                 </Card.Body>
                 <Card.Footer className="d-grid">
                   <Button
-                    variant="primary"
+                  
                     onClick={(e) => viewProduct(e, product._id)}
                   >
                     Details

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import Swal from "sweetalert2";
 import { OrderContext } from "../context/OrderContext";
-import emptyCart from "../assets/empty-cart.png";
+import emptyCart from "../assets/images/empty-cart.png";
 
 export default function Cart() {
   const { cart, removeItem, increase, decrease, clearCart } =
@@ -67,7 +67,7 @@ export default function Cart() {
 
   return (
     <Container>
-      <h1 className="text-center">Cart</h1>
+      <h1 className=" titlefont text-center pt-5">Cart</h1>
       <Table responsive striped bordered hover>
         <thead>
           <tr className="text-center">

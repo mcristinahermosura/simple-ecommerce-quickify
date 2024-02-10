@@ -1,6 +1,6 @@
 import { Button, Col, Container, Image, Row } from "react-bootstrap";
 
-import NotFoundSrc from "../assets/404.png";
+import NotFoundSrc from "../assets/images/404.png";
 
 export default function NotFound() {
   return (

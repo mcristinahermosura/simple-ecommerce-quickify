@@ -6,6 +6,7 @@ import { ADMIN_TABLES } from "../../utils/constant";
 import ProductTable from "./Product/ProductTable";
 import UsersTable from "./UsersTable";
 import OrdersTable from "./OrdersTable";
+import "../Layout.css";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function AdminDashboard() {
   return (
     <Container className="py-5">
       <h1
-        className=" p-5 text-center fw-bold"
+        className="titlefont p-5 text-center fw-bold"
         style={{ letterSpacing: "0.45em" }}
       >
         ADMIN DASHBOARD

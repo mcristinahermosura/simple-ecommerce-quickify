@@ -55,10 +55,10 @@ export default function Login() {
   return user ? (
     <Navigate to="/" />
   ) : (
-    <Container>
+    <Container className="">
       <Row>
-        <h3 className=" pt-5 mb-3 text-center">Login</h3>
-        <Col className="col-4 mx-auto shadow-lg rounded">
+        <h1 className="titlefont pt-5 mb-3 text-center">Login</h1>
+        <Col className=" bg-col col-4 mx-auto shadow-lg rounded">
           <Form onSubmit={(event) => authenticate(event)} className="p-3">
             <Form.Group className="mb-3" controlId="userEmail">
               <Form.Label>Email address</Form.Label>
@@ -85,7 +85,7 @@ export default function Login() {
             </Form.Group>
 
             <Button
-              variant={isActive ? "primary" : "dark"}
+              variant={isActive ? "success" : "dark"}
               type="submit"
               id="submitBtn"
               disabled={!isActive}
