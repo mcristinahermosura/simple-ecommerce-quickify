@@ -1,4 +1,4 @@
-import { ENDPOINT } from "../utils/Contants";
+import { ENDPOINT } from "../utils/constant";
 
 const BASE_API = process.env.REACT_APP_API_URL;
 
@@ -89,6 +89,7 @@ export const getSingleProduct = async (productId) => {
 };
 
 export const getUserOrders = async (id, token) => {
+  console.log("getUserOrders");
   const response = await fetch(`${BASE_API}/${ENDPOINT.ORDER}/${id}`, {
     method: "GET",
     headers: {
@@ -100,6 +101,7 @@ export const getUserOrders = async (id, token) => {
 };
 
 export const getAllOrders = async (token) => {
+  console.log("getAllOrders");
   const response = await fetch(`${BASE_API}/${ENDPOINT.ORDER_ALL}`, {
     method: "GET",
     headers: {

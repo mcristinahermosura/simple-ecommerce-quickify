@@ -1,21 +1,39 @@
 import React, { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
-import { Button, Container, Form, Table } from "react-bootstrap";
+import { Alert, Button, Container, Form, Image, Table } from "react-bootstrap";
 import { Plus, Dash } from "react-bootstrap-icons";
-import { Link, useNavigate } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
 
 import Swal from "sweetalert2";
 import { OrderContext } from "../context/OrderContext";
+import emptyCart from "../assets/empty-cart.png";
 
 export default function Cart() {
   const { cart, removeItem, increase, decrease, clearCart } =
     useContext(CartContext);
   const id = JSON.parse(localStorage.getItem("id"));
+  const token = JSON.parse(localStorage.getItem("token"));
   const { checkout } = useContext(OrderContext);
   const [shippingAddress, setShippingAddress] = useState("");
   const navigate = useNavigate();
 
   const handleCheckout = (e) => {
+    if (!token) {
+      Swal.fire({
+        title: "Please login to checkout",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Login",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
+      return;
+    }
+
     e.preventDefault();
     const order = {
       userId: id,
@@ -32,6 +50,7 @@ export default function Cart() {
       paymentMethod: "Cash On Delivery",
     };
 
+    console.log("here");
     Swal.fire({
       title: "Are you sure you want to checkout?",
       icon: "warning",
@@ -125,9 +144,24 @@ export default function Cart() {
               </tr>
             ))
           ) : (
-            <tr>
+            <tr style={{}}>
               <td colSpan="5" className="text-center">
-                cart is empty
+                <Alert variant="warning">
+                  <Alert.Heading>Your cart is empty!</Alert.Heading>
+                  <p>
+                    You have not added any items to your cart yet. Please browse
+                    our products and add some to your cart today.
+                  </p>
+                  <Image
+                    style={{
+                      width: "100%",
+                      maxWidth: "300px",
+                      margin: "auto",
+                      display: "block",
+                    }}
+                    src={emptyCart}
+                  />
+                </Alert>
               </td>
             </tr>
           )}
@@ -141,7 +175,7 @@ export default function Cart() {
               <Form.Label>Shipping Address</Form.Label>
               <Form.Control
                 as="textarea"
-                rows={3}
+                rows={1}
                 onChange={(e) => setShippingAddress(e.target.value)}
               />
             </Form.Group>
@@ -152,11 +186,9 @@ export default function Cart() {
           </Form>
         </div>
         <div className="d-flex justify-content-end gap-5">
-          <Link to="/order">
-            <Button variant="primary" onClick={handleCheckout}>
-              Checkout
-            </Button>
-          </Link>
+          <Button variant="primary" onClick={handleCheckout}>
+            Checkout
+          </Button>
           <h3>
             Total: ₱
             {cart && cart.length > 0

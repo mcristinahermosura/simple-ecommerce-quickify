@@ -1,28 +1,23 @@
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Swal from "sweetalert2";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
-  const [isActive, setIsActive] = useState(true);
-
-  useEffect(() => {
-    if (
-      email !== "" &&
-      password !== "" &&
-      verifyPassword !== "" &&
-      password === verifyPassword
-    ) {
-      setIsActive(false);
-    } else {
-      setIsActive(true);
-    }
-  }, [email, password, verifyPassword]);
 
   const registerUser = async (event) => {
     event.preventDefault();
+
+    if (password !== verifyPassword) {
+      Swal.fire({
+        title: "Passwords do not match! Please try again!",
+        icon: "error",
+        timer: 2000,
+      });
+      return;
+    }
 
     try {
       const data = await registerUser({
@@ -87,6 +82,11 @@ export default function Register() {
                   setPassword(event.target.value);
                 }}
               />
+              {password !== verifyPassword && (
+                <Form.Text className="text-danger">
+                  Passwords do not match
+                </Form.Text>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="password2">
@@ -100,9 +100,14 @@ export default function Register() {
                   setVerifyPassword(event.target.value);
                 }}
               />
+              {password !== verifyPassword && (
+                <Form.Text className="text-danger">
+                  Passwords do not match
+                </Form.Text>
+              )}
             </Form.Group>
 
-            <Button disabled={isActive} variant="primary" type="submit">
+            <Button variant="primary" type="submit">
               Submit
             </Button>
           </Form>

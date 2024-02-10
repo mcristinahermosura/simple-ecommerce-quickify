@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import {
   cancelOrder,
@@ -8,28 +8,40 @@ import {
   updateOrderStatus,
 } from "../api";
 import Swal from "sweetalert2";
-import { RESPONSE_STATUS } from "../utils/Contants";
+import { RESPONSE_STATUS } from "../utils/constant";
+import { CartContext } from "./CartContext";
 
 export const OrderContext = React.createContext();
 
 export const OrderProvider = ({ children }) => {
+  const { clearCart } = useContext(CartContext);
   const [orders, setOrders] = useState([]);
   const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
   const id = JSON.parse(localStorage.getItem("id"));
   const token = JSON.parse(localStorage.getItem("token"));
 
+  const getOrders = async () =>
+    !isAdmin ? await getUserOrders(id, token) : await getAllOrders(token);
+
   const fetchOrders = async () => {
     try {
-      const result = isAdmin
-        ? await getAllOrders(token)
-        : await getUserOrders(id, token);
-
-      setOrders(result.data);
+      const result = await getOrders();
+      if (result.status === RESPONSE_STATUS.FAILED)
+        Swal.fire({
+          title: "Failed to retrieve orders",
+          icon: "error",
+          text: result.message,
+          timer: 3000,
+          showConfirmButton: false,
+        });
+      else setOrders(result.data);
     } catch (error) {
       Swal.fire({
         title: "Failed to retrieve orders",
         icon: "error",
         text: error.message ?? error,
+        timer: 3000,
+        showConfirmButton: false,
       });
     }
   };
@@ -41,6 +53,8 @@ export const OrderProvider = ({ children }) => {
         Swal.fire({
           title: "Order cancelled successfully",
           icon: RESPONSE_STATUS.SUCCESS,
+          timer: 3000,
+          showConfirmButton: false,
         });
         fetchOrders();
       } else {
@@ -48,6 +62,8 @@ export const OrderProvider = ({ children }) => {
           title: "Failed to cancel order",
           icon: "error",
           text: res.message,
+          timer: 3000,
+          showConfirmButton: false,
         });
       }
     } catch (error) {
@@ -55,6 +71,8 @@ export const OrderProvider = ({ children }) => {
         title: "Failed to cancel order",
         icon: "error",
         text: error.message ?? error,
+        timer: 3000,
+        showConfirmButton: false,
       });
     }
   };
@@ -67,13 +85,17 @@ export const OrderProvider = ({ children }) => {
         Swal.fire({
           title: "Order status updated successfully",
           icon: RESPONSE_STATUS.SUCCESS,
+          timer: 3000,
+          showConfirmButton: false,
         });
         fetchOrders();
       } else {
         Swal.fire({
-          title: "Failed to update order status",
+          title: `Failed to update order ${orderId} with  status to ${status}`,
           icon: "error",
           text: res.message,
+          timer: 3000,
+          showConfirmButton: false,
         });
       }
     } catch (error) {
@@ -81,6 +103,8 @@ export const OrderProvider = ({ children }) => {
         title: "Failed to update order status",
         icon: "error",
         text: error.message ?? error,
+        timer: 3000,
+        showConfirmButton: false,
       });
     }
   };
@@ -103,6 +127,7 @@ export const OrderProvider = ({ children }) => {
               showConfirmButton: false,
             }).then((result) => {
               if (result.isDismissed) {
+                clearCart();
                 fetchOrders();
                 navigate("/orders");
               }
@@ -114,6 +139,8 @@ export const OrderProvider = ({ children }) => {
           title: "Failed to place order",
           icon: "error",
           text: res.message,
+          timer: 3000,
+          showConfirmButton: false,
         });
       }
     } catch (error) {
@@ -121,15 +148,19 @@ export const OrderProvider = ({ children }) => {
         title: "Failed to place order",
         icon: "error",
         text: error.message ?? error,
+        timer: 3000,
+        showConfirmButton: false,
       });
     }
   };
 
   useEffect(() => {
-    fetchOrders();
+    if (token) {
+      fetchOrders();
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [token]);
 
   return (
     <OrderContext.Provider

@@ -1,7 +1,7 @@
 import { Form, Button, Container, Col, Row } from "react-bootstrap";
 import { useState, useContext } from "react";
 import Swal from "sweetalert2";
-import {UserContext} from "../context/UserContext.js";
+import { UserContext } from "../context/UserContext.js";
 import { Navigate } from "react-router-dom";
 import { loginUser } from "../api/index.js";
 
@@ -66,6 +66,7 @@ export default function Login() {
                 type="email"
                 placeholder="Enter email"
                 required
+                autoComplete="off"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
               />
@@ -78,6 +79,7 @@ export default function Login() {
                 placeholder="Password"
                 required
                 value={password}
+                autoComplete="off"
                 onChange={(event) => setPassword(event.target.value)}
               />
             </Form.Group>

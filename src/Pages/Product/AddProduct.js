@@ -69,7 +69,7 @@ const ProductCreation = () => {
               />
             </Form.Group>
 
-            <Form.Group controlId="productQuantity">
+            <Form.Group controlId="productQuantity" className="mb-3">
               <Form.Label>Product Quantity</Form.Label>
               <Form.Control
                 type="number"

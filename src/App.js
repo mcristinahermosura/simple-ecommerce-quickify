@@ -1,10 +1,10 @@
-import AppNavBar from "./components/AppNavBar";
+import AppNavBar from "./components/AppNavBar.js";
 import "./App.css";
-import Home from "./Pages/Home";
-import Login from "./Pages/Login";
-import Register from "./Pages/Register";
+import Home from "./Pages/Home.js";
+import Login from "./Pages/Login.js";
+import Register from "./Pages/Register.js";
 import ProductCreation from "./Pages/Product/AddProduct.js";
-import AdminDashboard from "./Pages/AdminDashboard.js";
+import AdminDashboard from "./Pages/Admin/AdminDashboard.js";
 import Cart from "./Pages/Cart.js";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -12,6 +12,7 @@ import Products from "./Pages/Product/Products.js";
 import ContextProvider from "./context/ContextProvider.js";
 import ViewSingleProduct from "./Pages/Product/ViewSingleProduct.js";
 import OrderHistory from "./Pages/Order.js";
+import NotFound from "./Pages/NotFound.js";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/orders" element={<OrderHistory />} />
           <Route path="/product/:id" element={<ViewSingleProduct />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </ContextProvider>

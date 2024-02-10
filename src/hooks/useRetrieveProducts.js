@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getAllActiveProducts, getAllProducts } from "../api";
-import { RESPONSE_STATUS } from "../utils/Contants";
+import { RESPONSE_STATUS } from "../utils/constant";
 import Swal from "sweetalert2";
 
 export default function useRetrieveProducts() {
