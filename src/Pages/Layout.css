@@ -4,31 +4,29 @@
 
 .logo {
   font-family: "Raleway", sans-serif;
+  font-size: 1.5rem;
 }
-
 .home-content1 {
   font-family: "Poppins", sans-serif;
   font-weight: 700;
 }
 .home-content2 {
-  font-family: "Cardo", sans-serif;
-  font-weight: 400;
-
-  color: #c90c0c;
-}
-.home-content3 {
   font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  font-size: 2.8rem;
 }
-
 .body {
- 
+  height: 100vh;
   overflow: hidden !important;
   background-color: #ebe5e5;
   display: flex !important;
 }
-
+.titlefont {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 2.5rem;
+}
+.font-all{
+  font-family: "Poppins", sans-serif;
+}
 .btn-main {
   background-color: #1e4944;
   color: #fff;
@@ -38,14 +36,18 @@
   background-color: #425a53;
   color: #fff;
 }
-
-.titlefont {
-  font-family: "Poppins", sans-serif;
-  font-weight: 700;
-  font-size: 2.5rem;
+.btn-all {
+  background-color: #1e4944;
+  border: none;
+  color: #fff;
 }
+.btn-all:hover {
+  background-color: #26312e;
+  color: #fff;
+}
+
 .bg-col {
-  background-color: #cccccc;
+  background-color: #ebebeb;
 }
 
 .carousel {

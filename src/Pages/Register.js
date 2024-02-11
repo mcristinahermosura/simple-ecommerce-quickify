@@ -10,16 +10,16 @@ export default function Register() {
   const registerUser = async (event) => {
     event.preventDefault();
 
-    if (password !== verifyPassword) {
-      Swal.fire({
-        title: "Passwords do not match! Please try again!",
-        icon: "error",
-        timer: 2000,
-      });
-      return;
-    }
+      if (password !== verifyPassword) {
+        Swal.fire({
+          title: "Passwords do not match! Please try again!",
+          icon: "error",
+          timer: 2000,
+        });
+        return;
+      }
 
-    try {
+try {
       const data = await registerUser({
         email: email,
         password: password,
@@ -41,6 +41,7 @@ export default function Register() {
         });
       }
     } catch (error) {
+      console.log(error);
       Swal.fire({
         title: "Can't connect to server, please try again later!",
         icon: "info",
@@ -52,10 +53,10 @@ export default function Register() {
     <Container className="">
       <Row>
         <h1 className=" titlefont pt-5 mb-3 text-center">Register</h1>
-        <Col className="bg-col col-4 mx-auto shadow-lg rounded">
+        <Col className="bg-col col-7 col-md-6 mx-auto shadow-lg rounded">
           <Form onSubmit={(event) => registerUser(event)} className="p-3">
             <Form.Group controlId="email">
-              <Form.Label>Email</Form.Label>
+              <Form.Label className="font-all">Email</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Email Address"
@@ -72,7 +73,7 @@ export default function Register() {
             </Form.Text>
 
             <Form.Group className="mb-3" controlId="password1">
-              <Form.Label>Password</Form.Label>
+              <Form.Label className="font-all">Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Password"
@@ -90,7 +91,7 @@ export default function Register() {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="password2">
-              <Form.Label>Verify Password</Form.Label>
+              <Form.Label className="font-all">Verify Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Verify Password"
@@ -107,7 +108,7 @@ export default function Register() {
               )}
             </Form.Group>
 
-            <Button variant="primary" type="submit">
+            <Button className="font-all btn-all" type="submit">
               Submit
             </Button>
           </Form>

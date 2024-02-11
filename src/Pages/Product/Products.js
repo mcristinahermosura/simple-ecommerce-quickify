@@ -28,9 +28,9 @@ export default function Products() {
               lg={3}
               className="mb-5"
             >
-              <Card className="bg-card h-100 shadow-lg rounded border-3" >
+              <Card className="bg-card h-100 shadow-lg" >
                 {/* <Card.Img variant="top" src={product.image} /> */}
-                <Card.Body>
+                <Card.Body >
                   <Card.Title>{product.name}</Card.Title>
                   <Card.Text className="text-truncate">
                     {product.description}
@@ -42,7 +42,7 @@ export default function Products() {
                 </Card.Body>
                 <Card.Footer className="d-grid">
                   <Button
-                  
+                    className="btn btn-all font-all"
                     onClick={(e) => viewProduct(e, product._id)}
                   >
                     Details

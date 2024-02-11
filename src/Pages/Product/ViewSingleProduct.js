@@ -35,7 +35,7 @@ export default function ViewSingleProduct() {
   }
 
   return (
-    <Container className="d-flex align-items-center justify-content-start flex-column mt-5  ">
+    <Container className="d-flex align-items-center justify-content-start flex-column mt-5 font-all ">
       <Row className="justify-content-center">
         <Col md={8}>
           <div className="product-details">
@@ -51,12 +51,12 @@ export default function ViewSingleProduct() {
           <Button
             as={Link}
             to="/products"
-            variant="primary"
-            className="xs-mb-3 mr-5"
+            className="btn btn-all xs-mb-3 mr-5"
           >
             Go back to products
           </Button>
           <Button
+           className="btn btn-all"
             variant={user ? "primary" : "dark"}
             onClick={() =>
               !user

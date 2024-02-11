@@ -3,10 +3,11 @@ import model1 from "../assets/images/model1.png";
 import model2 from "../assets/images/model2.png";
 import model3 from "../assets/images/model3.png";
 import model4 from "../assets/images/model4.png";
+
 import { Link } from "react-router-dom";
 
 export default function Banner({ data }) {
-  const { content1, content2, content3, content4, destination, label } = data;
+  const { content1, content2, destination, label } = data;
 
   return (
     <>
@@ -17,10 +18,11 @@ export default function Banner({ data }) {
             xs={12}
             lg={5}
           >
-            <h1 className="home-content1 display-4 display-xs-8">{content1}</h1>
-            <h1 className="home-content2">{content2}</h1>
-            <h1 className="home-content3">{content3}</h1>
-            <h3>{content4}</h3>
+            <h1 className="home-content1 display-4 display-xs-8 pb-2">
+              {content1}
+            </h1>
+            <h5 className="home-content2">{content2}</h5>
+
             <Link className="btn btn-main mt-1" to={destination}>
               {label}
             </Link>
@@ -29,7 +31,7 @@ export default function Banner({ data }) {
           <Col
             xs={12}
             lg={6}
-            className="d-flex justify-content-center align-items-start align-items-lg-start  mt-lg-5"
+            className="d-flex justify-content-center align-items-start align-items-lg-start  "
           >
             <Carousel
               fade

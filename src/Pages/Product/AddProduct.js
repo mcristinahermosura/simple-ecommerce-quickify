@@ -37,7 +37,7 @@ const ProductCreation = () => {
       <Row>
         <Col className="col-9 p-3 mx-auto shadow-lg rounded">
           <h3 className="mb-3">Add Product</h3>
-          <Form>
+          <Form className="font-all">
             <Form.Group controlId="productName">
               <Form.Label>Product Name</Form.Label>
               <Form.Control
@@ -79,7 +79,7 @@ const ProductCreation = () => {
               />
             </Form.Group>
 
-            <Button variant="primary" onClick={handleProductCreation}>
+            <Button className="btn btn-all" onClick={handleProductCreation}>
               Create Product
             </Button>
           </Form>

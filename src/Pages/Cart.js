@@ -66,11 +66,11 @@ export default function Cart() {
   };
 
   return (
-    <Container>
+    <Container className="pb-4">
       <h1 className=" titlefont text-center pt-5">Cart</h1>
       <Table responsive striped bordered hover>
         <thead>
-          <tr className="text-center">
+          <tr className="text-center font-all">
             <th>Item</th>
             <th>Price</th>
             <th>Quantity</th>
@@ -145,7 +145,7 @@ export default function Cart() {
             ))
           ) : (
             <tr style={{}}>
-              <td colSpan="5" className="text-center">
+              <td colSpan="5" className="text-center font-all">
                 <Alert variant="warning">
                   <Alert.Heading>Your cart is empty!</Alert.Heading>
                   <p>
@@ -167,7 +167,7 @@ export default function Cart() {
           )}
         </tbody>
       </Table>
-      <div className="d-flex flex-column justify-content-between">
+      <div className="d-flex flex-column justify-content-between font-all">
         <div className="card p-4 mb-3">
           <h4 className="mb-3">Shipping Details</h4>
           <Form>
@@ -186,7 +186,7 @@ export default function Cart() {
           </Form>
         </div>
         <div className="d-flex justify-content-end gap-5">
-          <Button variant="primary" onClick={handleCheckout}>
+          <Button className="btn btn-all font-all px-4" onClick={handleCheckout}>
             Checkout
           </Button>
           <h3>
