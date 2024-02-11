@@ -1,44 +1,48 @@
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { registerUser } from "../api";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
 
-  const registerUser = async (event) => {
+  const handleRegisterUser = async (event) => {
     event.preventDefault();
 
-      if (password !== verifyPassword) {
-        Swal.fire({
-          title: "Passwords do not match! Please try again!",
-          icon: "error",
-          timer: 2000,
-        });
-        return;
-      }
+    if (password !== verifyPassword) {
+      Swal.fire({
+        title: "Passwords do not match! Please try again!",
+        icon: "error",
+        timer: 2000,
+      });
+      return;
+    }
 
-try {
+    try {
       const data = await registerUser({
         email: email,
         password: password,
       });
-
-      if (data) {
+      if (data.status === "success") {
+        console.log(data);
         Swal.fire({
           title: "Thank you for registering",
           icon: "success",
+          text: data.message
         });
 
         setEmail("");
         setPassword("");
         setVerifyPassword("");
-      } else {
+      }
+      else {
         Swal.fire({
-          title: "Already registered. Please use another email!",
+          title: "Registration Failed",
           icon: "error",
-        });
+          text: data.message
+        })
       }
     } catch (error) {
       console.log(error);
@@ -54,9 +58,9 @@ try {
       <Row>
         <h1 className=" titlefont pt-5 mb-3 text-center">Register</h1>
         <Col className="bg-col col-7 col-md-6 mx-auto shadow-lg rounded">
-          <Form onSubmit={(event) => registerUser(event)} className="p-3">
+          <Form onSubmit={handleRegisterUser} className="p-3">
             <Form.Group controlId="email">
-              <Form.Label className="font-all">Email</Form.Label>
+              <Form.Label >Email</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Email Address"
@@ -73,7 +77,7 @@ try {
             </Form.Text>
 
             <Form.Group className="mb-3" controlId="password1">
-              <Form.Label className="font-all">Password</Form.Label>
+              <Form.Label >Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Password"
@@ -91,7 +95,7 @@ try {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="password2">
-              <Form.Label className="font-all">Verify Password</Form.Label>
+              <Form.Label >Verify Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Verify Password"
@@ -108,7 +112,7 @@ try {
               )}
             </Form.Group>
 
-            <Button className="font-all btn-all" type="submit">
+            <Button className=" btn-all" type="submit">
               Submit
             </Button>
           </Form>

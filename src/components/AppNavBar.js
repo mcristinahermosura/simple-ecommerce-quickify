@@ -22,11 +22,11 @@ export default function AppNavBar() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link as={NavLink} to="/" className="font-all">
+            <Nav.Link as={NavLink} to="/" >
               Home
             </Nav.Link>
 
-            <Nav.Link as={NavLink} to="/products" className="font-all">
+            <Nav.Link as={NavLink} to="/products" >
               Products
             </Nav.Link>
 
@@ -42,7 +42,7 @@ export default function AppNavBar() {
               )}
             </Nav.Link>
             {isAdmin && (
-              <Nav.Link as={NavLink} to="/dashboard" className="font-all">
+              <Nav.Link as={NavLink} to="/dashboard" >
                 Admin Dashboard
               </Nav.Link>
             )}
@@ -50,7 +50,7 @@ export default function AppNavBar() {
             {user !== null ? (
               <>
                 <Nav.Link
-                 className="font-all"
+                 
                   as={NavLink}
                   onClick={() =>
                     Swal.fire({
@@ -74,10 +74,10 @@ export default function AppNavBar() {
               </>
             ) : (
               <>
-                <Nav.Link as={NavLink} to="/login"  className="font-all">
+                <Nav.Link as={NavLink} to="/login"  >
                   Login
                 </Nav.Link>
-                <Nav.Link as={NavLink} to="/signUp" className="font-all">
+                <Nav.Link as={NavLink} to="/signUp" >
                   Sign up
                 </Nav.Link>
               </>

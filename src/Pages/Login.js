@@ -61,7 +61,7 @@ export default function Login() {
         <Col className=" bg-col col-7 col-md-6 mx-auto shadow-lg rounded">
           <Form onSubmit={(event) => authenticate(event)} className="p-3">
             <Form.Group className="mb-3" controlId="userEmail">
-              <Form.Label className="font-all">Email address</Form.Label>
+              <Form>Email address</Form>
               <Form.Control
                 type="email"
                 placeholder="Enter email"
@@ -73,7 +73,7 @@ export default function Login() {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="password">
-              <Form.Label className="font-all" >Password</Form.Label>
+              <Form >Password</Form>
               <Form.Control
                 type="password"
                 placeholder="Password"
@@ -85,7 +85,6 @@ export default function Login() {
             </Form.Group>
 
             <Button
-              className="font-all"
               variant={isActive ? "success" : "dark"}
               type="submit"
               id="submitBtn"

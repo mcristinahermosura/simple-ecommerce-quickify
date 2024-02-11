@@ -106,7 +106,7 @@ export default function ProductTable() {
           return (
             <tr key={index} className="text-center ">
               <td style={{ verticalAlign: "middle" }}>
-                <h4>{product.name}</h4>
+                <h4 className="fw-bold">{product.name}</h4>
                 <p>{product.description}</p>
               </td>
               <td style={{ verticalAlign: "middle" }}>

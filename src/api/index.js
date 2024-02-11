@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import { ENDPOINT } from "../utils/constant";
 
 const BASE_API = process.env.REACT_APP_API_URL;
@@ -79,6 +80,13 @@ export const registerUser = async (user) => {
     },
     body: JSON.stringify(user),
   });
+  if (!response.ok) {
+    return Swal.fire({
+      title: response.json().message,
+      icon: "error",
+      text: response.message,
+    });
+  }
 
   return response.json();
 };

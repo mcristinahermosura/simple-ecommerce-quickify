@@ -70,7 +70,7 @@ export default function Cart() {
       <h1 className=" titlefont text-center pt-5">Cart</h1>
       <Table responsive striped bordered hover>
         <thead>
-          <tr className="text-center font-all">
+          <tr className="text-center">
             <th>Item</th>
             <th>Price</th>
             <th>Quantity</th>
@@ -145,9 +145,9 @@ export default function Cart() {
             ))
           ) : (
             <tr style={{}}>
-              <td colSpan="5" className="text-center font-all">
+              <td colSpan="5" className="text-center">
                 <Alert variant="warning">
-                  <Alert.Heading>Your cart is empty!</Alert.Heading>
+                  <Alert.Heading className="fw-bold">Your cart is empty!</Alert.Heading>
                   <p>
                     You have not added any items to your cart yet. Please browse
                     our products and add some to your cart today.
@@ -167,9 +167,9 @@ export default function Cart() {
           )}
         </tbody>
       </Table>
-      <div className="d-flex flex-column justify-content-between font-all">
+      <div className="d-flex flex-column justify-content-between">
         <div className="card p-4 mb-3">
-          <h4 className="mb-3">Shipping Details</h4>
+          <h4 className="mb-3 fw-bold">Shipping Details</h4>
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Shipping Address</Form.Label>
@@ -186,10 +186,10 @@ export default function Cart() {
           </Form>
         </div>
         <div className="d-flex justify-content-end gap-5">
-          <Button className="btn btn-all font-all px-4" onClick={handleCheckout}>
+          <Button className="btn btn-all px-4" onClick={handleCheckout}>
             Checkout
           </Button>
-          <h3>
+          <h3 className="fw-bold">
             Total: ₱
             {cart && cart.length > 0
               ? cart

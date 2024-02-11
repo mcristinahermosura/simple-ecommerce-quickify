@@ -37,7 +37,7 @@ const ProductCreation = () => {
       <Row>
         <Col className="col-9 p-3 mx-auto shadow-lg rounded">
           <h3 className="mb-3">Add Product</h3>
-          <Form className="font-all">
+          <Form>
             <Form.Group controlId="productName">
               <Form.Label>Product Name</Form.Label>
               <Form.Control

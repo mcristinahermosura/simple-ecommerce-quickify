@@ -31,7 +31,7 @@ export default function Products() {
               <Card className="bg-card h-100 shadow-lg" >
                 {/* <Card.Img variant="top" src={product.image} /> */}
                 <Card.Body >
-                  <Card.Title>{product.name}</Card.Title>
+                  <Card.Title className="fw-bold">{product.name}</Card.Title>
                   <Card.Text className="text-truncate">
                     {product.description}
                   </Card.Text>
@@ -42,7 +42,7 @@ export default function Products() {
                 </Card.Body>
                 <Card.Footer className="d-grid">
                   <Button
-                    className="btn btn-all font-all"
+                    className="btn btn-all"
                     onClick={(e) => viewProduct(e, product._id)}
                   >
                     Details

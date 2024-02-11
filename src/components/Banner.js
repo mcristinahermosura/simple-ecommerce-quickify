@@ -23,7 +23,7 @@ export default function Banner({ data }) {
             </h1>
             <h5 className="home-content2">{content2}</h5>
 
-            <Link className="btn btn-main mt-1" to={destination}>
+            <Link className="btn btn-main mt-1 fw-bold" to={destination}>
               {label}
             </Link>
           </Col>
@@ -31,7 +31,7 @@ export default function Banner({ data }) {
           <Col
             xs={12}
             lg={6}
-            className="d-flex justify-content-center align-items-start align-items-lg-start  "
+            className="d-flex justify-content-center align-items-start align-items-lg-start mt-lg-5"
           >
             <Carousel
               fade

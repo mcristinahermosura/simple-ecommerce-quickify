@@ -35,11 +35,11 @@ export default function ViewSingleProduct() {
   }
 
   return (
-    <Container className="d-flex align-items-center justify-content-start flex-column mt-5 font-all ">
+    <Container className="d-flex align-items-center justify-content-start flex-column mt-5 ">
       <Row className="justify-content-center">
         <Col md={8}>
-          <div className="product-details">
-            <h1>{product?.name}</h1>
+          <div>
+            <h1 className="fw-bold">{product?.name}</h1>
             <p>{product?.description}</p>
             <p>Price: ₱{product?.price?.toFixed(2)}</p>
             <p>Stock: {product?.stock}</p>
