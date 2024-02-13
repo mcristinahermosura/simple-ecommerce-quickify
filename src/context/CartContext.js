@@ -38,7 +38,7 @@ export const CartProvider = ({ children }) => {
     Swal.fire({
       title: "Item removed",
       icon: "success",
-      timer: 1500,
+      timer: 2500,
       showConfirmButton: false,
     });
   };
@@ -66,6 +66,7 @@ export const CartProvider = ({ children }) => {
           showCancelButton: true,
           confirmButtonText: "Yes",
           cancelButtonText: "No",
+          allowOutsideClick: false,
         }).then((result) => {
           if (result.isConfirmed) {
             removeItem(item);

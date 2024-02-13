@@ -1,5 +1,5 @@
 import ProductStatusButton from "./ProductStatusButton";
 import UpdateProductForm from "./UpdateProductForm";
-import ProductTable from "./ProductTable";
+import CreateProductForm from "./CreateProductForm";
 
-export { ProductStatusButton, UpdateProductForm, ProductTable };
+export { ProductStatusButton, UpdateProductForm, CreateProductForm };

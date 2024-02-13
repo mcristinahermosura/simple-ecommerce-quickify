@@ -1,31 +1,60 @@
-import React, { useContext, useState } from "react";
-import { CartContext } from "../context/CartContext";
+import React, { useContext, useEffect, useState } from "react";
+import { CartContext } from "../../context/CartContext";
 import { Alert, Button, Container, Form, Image, Table } from "react-bootstrap";
 import { Plus, Dash } from "react-bootstrap-icons";
 
 import { useNavigate } from "react-router-dom";
 
 import Swal from "sweetalert2";
-import { OrderContext } from "../context/OrderContext";
-import emptyCart from "../assets/images/empty-cart.png";
+import { OrderContext } from "../../context/OrderContext";
+import emptyCart from "../../assets/images/empty-cart.png";
 
 export default function Cart() {
   const { cart, removeItem, increase, decrease, clearCart } =
     useContext(CartContext);
   const id = JSON.parse(localStorage.getItem("id"));
   const token = JSON.parse(localStorage.getItem("token"));
+  const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
   const { checkout } = useContext(OrderContext);
   const [shippingAddress, setShippingAddress] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (isAdmin) {
+      Swal.fire({
+        title: "For Customers Only! You will be redirected to the homepage.",
+        icon: "error",
+        timer: 2000,
+        showConfirmButton: false,
+      }).then((res) => {
+        res.dismiss === Swal.DismissReason.timer && navigate("/");
+      });
+    }
+
+    if (!token) {
+      Swal.fire({
+        title:
+          "You need to login to access this page. Please login first. \n You will be redirected to the login page.",
+        icon: "warning",
+        confirmButtonText: "Login",
+        showCancelButton: false,
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
+    }
+  }, [isAdmin, token, navigate]);
+
   const handleCheckout = (e) => {
+    e.preventDefault();
     if (!token) {
       Swal.fire({
         title: "Please login to checkout",
         icon: "warning",
-        showCancelButton: true,
         confirmButtonText: "Login",
-        cancelButtonText: "Cancel",
+        showCancelButton: false,
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/login");
@@ -34,11 +63,31 @@ export default function Cart() {
       return;
     }
 
-    e.preventDefault();
+    if (cart.length === 0) {
+      Swal.fire({
+        title: "Your cart is empty! Try adding some.",
+        icon: "warning",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    if (shippingAddress === "") {
+      Swal.fire({
+        title: "Please enter your shipping address",
+        icon: "warning",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
     const order = {
       userId: id,
       orders: cart.map((item) => ({
         productId: item._id,
+        image: item.image.url,
         quantity: item.quantity,
         price: item.price,
         total: item.price * item.quantity,
@@ -50,7 +99,6 @@ export default function Cart() {
       paymentMethod: "Cash On Delivery",
     };
 
-    console.log("here");
     Swal.fire({
       title: "Are you sure you want to checkout?",
       icon: "warning",
@@ -61,6 +109,20 @@ export default function Cart() {
       if (result.isConfirmed) {
         checkout(order, navigate);
         clearCart();
+      }
+    });
+  };
+
+  const removeItemAlert = (item) => {
+    Swal.fire({
+      title: "Are you sure you want to remove this item?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeItem(item);
       }
     });
   };
@@ -90,17 +152,7 @@ export default function Cart() {
                       variant="outline-secondary"
                       onClick={() => {
                         if (item.quantity === "1") {
-                          Swal.fire({
-                            title: "Are you sure you want to remove this item?",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonText: "Yes",
-                            cancelButtonText: "No",
-                          }).then((result) => {
-                            if (result.isConfirmed) {
-                              removeItem(item);
-                            }
-                          });
+                          removeItemAlert(item);
                         } else {
                           decrease(item);
                         }
@@ -124,19 +176,7 @@ export default function Cart() {
                 <td>
                   <Button
                     variant="outline-danger"
-                    onClick={() =>
-                      Swal.fire({
-                        title: "Are you sure you want to remove this item?",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: "Yes",
-                        cancelButtonText: "No",
-                      }).then((result) => {
-                        if (result.isConfirmed) {
-                          removeItem(item);
-                        }
-                      })
-                    }
+                    onClick={() => removeItemAlert(item)}
                   >
                     Remove
                   </Button>

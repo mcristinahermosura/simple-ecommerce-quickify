@@ -1,11 +1,64 @@
 import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+import { getAllUsers } from "../api";
 
 export const UserContext = React.createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [id, setId] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [token, setToken] = useState(
+    JSON.parse(localStorage.getItem("token")) || null
+  );
+  const [isAdmin, setIsAdmin] = useState(
+    JSON.parse(localStorage.getItem("isAdmin")) || false
+  );
+  const [id, setId] = useState(
+    JSON.parse(localStorage.getItem("isAdmin")) || null
+  );
+
+  const fetchUsers = async () => {
+    try {
+      const response = await getAllUsers(token);
+
+      if (response.status === "success") {
+        setUsers(response.data);
+      } else {
+        Swal.fire({
+          title: "Failed to retrieve users",
+          icon: "error",
+          text: response.message,
+          timer: 3000,
+          showConfirmButton: false,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Failed to retrieve users",
+        icon: "error",
+        text: error.message ?? error,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    }
+  };
+
+  const updateUser = (newUserData) => {
+    localStorage.setItem("token", JSON.stringify(newUserData.accessToken));
+    localStorage.setItem("isAdmin", JSON.stringify(newUserData.isAdmin));
+    localStorage.setItem("id", JSON.stringify(newUserData.id));
+
+    setToken(newUserData.accessToken);
+    setIsAdmin(newUserData.isAdmin);
+    setId(newUserData.id);
+  };
+
+  const removeUser = () => {
+    localStorage.clear();
+    setUsers([]);
+    setToken(null);
+    setIsAdmin(false);
+    setId(null);
+  };
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -13,37 +66,27 @@ export const UserProvider = ({ children }) => {
     const storedId = localStorage.getItem("id");
 
     if (storedToken) {
-      setUser(JSON.parse(storedToken));
+      setToken(JSON.parse(storedToken));
       setIsAdmin(JSON.parse(storedAdmin));
       setId(JSON.parse(storedId));
     }
-  }, []);
+    if (isAdmin) {
+      fetchUsers();
+    }
 
-  const updateUser = (newUserData) => {
-    localStorage.setItem("token", JSON.stringify(newUserData.accessToken));
-    localStorage.setItem("isAdmin", JSON.stringify(newUserData.isAdmin));
-    localStorage.setItem("id", JSON.stringify(newUserData.id));
-    setUser(newUserData.accessToken);
-    setIsAdmin(newUserData.isAdmin);
-    setId(newUserData.id);
-  };
-
-  const removeUser = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("isAdmin");
-    localStorage.removeItem("id");
-    setUser(null);
-    setIsAdmin(false);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin]);
 
   return (
     <UserContext.Provider
       value={{
         id,
-        user,
+        token,
         isAdmin,
+        users,
         updateUser,
         removeUser,
+        fetchUsers,
       }}
     >
       {children}

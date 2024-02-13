@@ -3,29 +3,27 @@ import { ENDPOINT } from "../utils/constant";
 
 const BASE_API = process.env.REACT_APP_API_URL;
 
-export const createProduct = async (product, token) => {
+export const createProduct = async (formData, token) => {
   const response = await fetch(`${BASE_API}/${ENDPOINT.PRODUCTS}`, {
     method: "POST",
+    body: formData,
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(product),
   });
 
   return response.json();
 };
 
-export const updateProductDetails = async (product, token) => {
+export const updateProductDetails = async (product, token, id) => {
   const response = await fetch(
-    `${BASE_API}/${ENDPOINT.PRODUCTS_UPDATE}/${product._id}`,
+    `${BASE_API}/${ENDPOINT.PRODUCTS_UPDATE}/${id}`,
     {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(product),
+      body: product,
     }
   );
 
@@ -91,13 +89,24 @@ export const registerUser = async (user) => {
   return response.json();
 };
 
+export const getAllUsers = async (token) => {
+  const response = await fetch(`${BASE_API}/${ENDPOINT.USER}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.json();
+};
+
 export const getSingleProduct = async (productId) => {
   const response = await fetch(`${BASE_API}/${ENDPOINT.PRODUCTS}/${productId}`);
   return response.json();
 };
 
 export const getUserOrders = async (id, token) => {
-  console.log("getUserOrders");
   const response = await fetch(`${BASE_API}/${ENDPOINT.ORDER}/${id}`, {
     method: "GET",
     headers: {
@@ -109,7 +118,6 @@ export const getUserOrders = async (id, token) => {
 };
 
 export const getAllOrders = async (token) => {
-  console.log("getAllOrders");
   const response = await fetch(`${BASE_API}/${ENDPOINT.ORDER_ALL}`, {
     method: "GET",
     headers: {
@@ -147,13 +155,26 @@ export const cancelOrder = async (orderId, token) => {
 };
 
 export const updateOrderStatus = async (orderId, status, token) => {
-  const response = await fetch(`${BASE_API}/${ENDPOINT.ORDER}/${orderId}`, {
+  const response = await fetch(`${BASE_API}/${ENDPOINT.ORDER_UPDATE_STATUS}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({ orderStatus: status, orderId }),
+  });
+
+  return response.json();
+};
+
+export const updateUserRole = async (userId, role, token) => {
+  const response = await fetch(`${BASE_API}/${ENDPOINT.USER_UPDATE}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ id: userId, isAdmin: role }),
   });
 
   return response.json();
