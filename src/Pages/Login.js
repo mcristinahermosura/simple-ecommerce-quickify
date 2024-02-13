@@ -36,15 +36,7 @@ export default function Login() {
           text: "Welcome to Quickify!",
         }).then((res) => {
           res.isConfirmed &&
-            Swal.fire({
-              title: "Redirecting to home page...",
-              icon: "info",
-              timer: 2500,
-              showConfirmButton: false,
-              allowOutsideClick: false,
-            }).then((res) => {
-              res.dismiss === Swal.DismissReason.timer && navigate("/");
-            });
+             navigate("/");
         });
         setEmail("");
         setPassword("");

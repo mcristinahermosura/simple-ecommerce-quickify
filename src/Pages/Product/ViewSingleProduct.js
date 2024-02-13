@@ -81,7 +81,7 @@ export default function ViewSingleProduct() {
                     showConfirmButton: false,
                   }))
             }
-            disabled={product.stock === 0}
+            disabled={product.stock === 0} 
           >
             Add to Cart
           </Button>

@@ -44,4 +44,4 @@ export const ORDER_STATUS = Object.freeze({
   CANCELLED: "Cancelled",
 });
 
-// export const BODY_SHOP_LOGO = `${BASE_API}/files/THEBODYSHOPLOGO.png`;
+export const BODY_SHOP_LOGO = `${BASE_API}/files/THEBODYSHOPLOGO.png`;

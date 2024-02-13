@@ -7,6 +7,7 @@ import {
   Badge,
   Table,
   Alert,
+  Image,
   Nav,
 } from "react-bootstrap";
 
@@ -15,7 +16,7 @@ import { format } from "date-fns";
 import Swal from "sweetalert2";
 import NoOrder from "../../assets/images/no-orders.png";
 import { updateOrderStatus } from "../../api";
-import { ORDER_STATUS } from "../../utils/constant";
+import { BODY_SHOP_LOGO, ORDER_STATUS } from "../../utils/constant";
 import { useNavigate } from "react-router-dom";
 
 export default function OrderHistory() {
@@ -137,6 +138,11 @@ export default function OrderHistory() {
                 >
                   <div className="order-card">
                     <div className="order-header">
+                      <img
+                        src={BODY_SHOP_LOGO}
+                        alt="Brand Logo"
+                        width={"25%"}
+                      />
                       <div>
                         <h4>Order ID: {order._id}</h4>
                         <p>
@@ -174,6 +180,11 @@ export default function OrderHistory() {
                           {order.orders.map((item, index) => (
                             <tr key={index}>
                               <td width={"80%"}>
+                                <img
+                                  src={item.image?.url ?? BODY_SHOP_LOGO}
+                                  alt={item.productName}
+                                  width="20%"
+                                />
                                 <strong>{item.productName}</strong>
                               </td>
                               <td className="text-center">
@@ -223,6 +234,16 @@ export default function OrderHistory() {
                     You have not placed any orders yet. Please browse our
                     products and place an order today.
                   </p>
+                  <Image
+                    style={{
+                      width: "100%",
+                      maxWidth: "300px",
+                      margin: "auto",
+                      display: "block",
+                    }}
+                    src={NoOrder}
+                    fluid
+                  />
                 </Alert>
               </Col>
             </Row>

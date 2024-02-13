@@ -67,7 +67,7 @@ export default function Register() {
                 type="text"
                 placeholder="Full Name"
                 required
-                value={email}
+                value={name}
                 onChange={(event) => {
                   setName(event.target.value);
                 }}
