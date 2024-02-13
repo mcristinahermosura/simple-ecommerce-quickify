@@ -2,14 +2,14 @@ import { Form, Button, Container, Col, Row } from "react-bootstrap";
 import { useState, useContext } from "react";
 import Swal from "sweetalert2";
 import { UserContext } from "../context/UserContext.js";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/index.js";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const { user, updateUser } = useContext(UserContext);
+  const navigate = useNavigate();
+  const { updateUser } = useContext(UserContext);
 
   /**
    * Flag that determines if the email and password are both non-empty.
@@ -34,6 +34,17 @@ export default function Login() {
           title: "Login Succesfull",
           icon: "success",
           text: "Welcome to Quickify!",
+        }).then((res) => {
+          res.isConfirmed &&
+            Swal.fire({
+              title: "Redirecting to home page...",
+              icon: "info",
+              timer: 2500,
+              showConfirmButton: false,
+              allowOutsideClick: false,
+            }).then((res) => {
+              res.dismiss === Swal.DismissReason.timer && navigate("/");
+            });
         });
         setEmail("");
         setPassword("");
@@ -52,9 +63,7 @@ export default function Login() {
     }
   };
 
-  return user ? (
-    <Navigate to="/" />
-  ) : (
+  return (
     <Container className="">
       <Row>
         <h1 className="titlefont pt-5 mb-3 text-center">Login</h1>
@@ -73,7 +82,7 @@ export default function Login() {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="password">
-              <Form >Password</Form>
+              <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Password"

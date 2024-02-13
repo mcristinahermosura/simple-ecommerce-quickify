@@ -8,7 +8,7 @@ export default function useRetrieveProducts() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const isMounted = useRef(true); // Add this useRef import
+  const isMounted = useRef(true); 
 
   const fetchProducts = async () => {
     setIsLoading(true);

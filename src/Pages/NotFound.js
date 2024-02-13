@@ -8,20 +8,8 @@ export default function NotFound() {
       fluid
       className="d-flex flex-column justify-content-center align-items-center h-100 mt-5"
     >
-      <Row className="text-center mt-5">
-        <Col xs={12} md={5}>
-          <Image
-            src={NotFoundSrc}
-            fluid
-            alt="Not Found"
-            className="mb-4"
-            style={{
-              width: "100%",
-              maxWidth: "450px",
-            }}
-          />
-        </Col>
-        <Col md={5}>
+      <Row className="text-center mt-5 gap-5 ">
+        <Col>
           <h1 className="display-4 fw-bold ">
             Oops! We couldn't find that page.
           </h1>
@@ -29,9 +17,21 @@ export default function NotFound() {
             It looks like you might have mistyped the URL or the page has been
             moved. Don't worry, we'll help you get back on track.
           </p>
-          <Button variant="primary" size="lg" href="/">
+          <Button variant="primary" href="/">
             Go Home
           </Button>
+        </Col>
+        <Col xs={12}>
+          <Image
+            src={NotFoundSrc}
+            fluid
+            alt="Not Found"
+            className="mb-4"
+            style={{
+              width: "100%",
+              maxWidth: "750px",
+            }}
+          />
         </Col>
       </Row>
     </Container>

@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Container, Row, Col } from "react-bootstrap";
+import { Button, Container, Row, Col, Image } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getSingleProduct } from "../../api";
 import { CartContext } from "../../context/CartContext";
 import { UserContext } from "../../context/UserContext";
+import { BODY_SHOP_LOGO } from "../../utils/constant";
 
 export default function ViewSingleProduct() {
   const { addItem } = useContext(CartContext);
-  const { user } = useContext(UserContext);
+  const { token } = useContext(UserContext);
+  const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
   const { id } = useParams();
   const [product, setProduct] = useState({});
 
@@ -35,10 +37,21 @@ export default function ViewSingleProduct() {
   }
 
   return (
-    <Container className="d-flex align-items-center justify-content-start flex-column mt-5 ">
-      <Row className="justify-content-center">
-        <Col md={8}>
-          <div>
+    <Container className="d-flex align-items-center justify-content-start flex-column mt-5 p-5">
+      <Row className="justify-content-center flex-column align-items-center">
+        <Col xs={10} sm={8} md={6} lg={3}>
+          <Image
+            src={
+              product?.image?.url.length > 0
+                ? product.image.url
+                : BODY_SHOP_LOGO
+            }
+            thumbnail
+            className="mb-3 mx-auto d-block"
+          />
+        </Col>
+        <Col xs={12} md={8}>
+          <div className="product-details">
             <h1 className="fw-bold">{product?.name}</h1>
             <p>{product?.description}</p>
             <p>Price: ₱{product?.price?.toFixed(2)}</p>
@@ -48,22 +61,25 @@ export default function ViewSingleProduct() {
       </Row>
       <Row className="justify-content-center text-center h-100">
         <Col className="d-flex gap-5 justify-content-center ">
-          <Button
-            as={Link}
-            to="/products"
-            className="btn btn-all xs-mb-3 mr-5"
-          >
+          <Button as={Link} to="/products" className="btn btn-all xs-mb-3 mr-5">
             Go back to products
           </Button>
           <Button
-           className="btn btn-all"
-            variant={user ? "primary" : "dark"}
+            className="btn btn-all"
+            variant={token ? "primary" : "dark"}
             onClick={() =>
-              !user
+              !token
                 ? Swal.fire({
                     title:
                       "Oops! You need to log in before adding items to your cart.",
                     icon: "info",
+                  })
+                : isAdmin
+                ? Swal.fire({
+                    title: "You are admin. You cannot add items to your cart.",
+                    icon: "info",
+                    timer: 2000,
+                    showConfirmButton: false,
                   })
                 : (addItem(product),
                   Swal.fire({

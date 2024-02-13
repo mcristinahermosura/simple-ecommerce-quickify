@@ -1,14 +1,16 @@
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { RESPONSE_STATUS } from "../utils/constant";
 import { registerUser } from "../api";
 
 export default function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
 
-  const handleRegisterUser = async (event) => {
+  const handleRegister = async (event) => {
     event.preventDefault();
 
     if (password !== verifyPassword) {
@@ -24,25 +26,25 @@ export default function Register() {
       const data = await registerUser({
         email: email,
         password: password,
+        name,
       });
-      if (data.status === "success") {
-        console.log(data);
+
+      if (data.success === RESPONSE_STATUS.SUCCESS) {
         Swal.fire({
           title: "Thank you for registering",
           icon: "success",
-          text: data.message
+          text: data.message,
         });
-
+        setName("");
         setEmail("");
         setPassword("");
         setVerifyPassword("");
-      }
-      else {
+      } else {
         Swal.fire({
           title: "Registration Failed",
           icon: "error",
-          text: data.message
-        })
+          text: data.message,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -58,9 +60,21 @@ export default function Register() {
       <Row>
         <h1 className=" titlefont pt-5 mb-3 text-center">Register</h1>
         <Col className="bg-col col-7 col-md-6 mx-auto shadow-lg rounded">
-          <Form onSubmit={handleRegisterUser} className="p-3">
+          <Form onSubmit={(event) => handleRegister(event)} className="p-3">
+            <Form.Group controlId="name">
+              <Form.Label className="font-all">Full Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Full Name"
+                required
+                value={email}
+                onChange={(event) => {
+                  setName(event.target.value);
+                }}
+              />
+            </Form.Group>
             <Form.Group controlId="email">
-              <Form.Label >Email</Form.Label>
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Email Address"
@@ -77,7 +91,7 @@ export default function Register() {
             </Form.Text>
 
             <Form.Group className="mb-3" controlId="password1">
-              <Form.Label >Password</Form.Label>
+              <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Password"
@@ -95,7 +109,7 @@ export default function Register() {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="password2">
-              <Form.Label >Verify Password</Form.Label>
+              <Form.Label>Verify Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Verify Password"

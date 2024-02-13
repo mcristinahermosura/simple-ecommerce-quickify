@@ -125,6 +125,7 @@ export const OrderProvider = ({ children }) => {
               icon: "info",
               timer: 1500,
               showConfirmButton: false,
+              allowOutsideClick: false,
             }).then((result) => {
               if (result.isDismissed) {
                 clearCart();
