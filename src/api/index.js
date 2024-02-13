@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 import { ENDPOINT } from "../utils/constant";
 
-const BASE_API = process.env.REACT_APP_API_URL;
+const BASE_API = process.env.REACT_APP_API_BASE_URL;
 
 export const createProduct = async (formData, token) => {
   const response = await fetch(`${BASE_API}/${ENDPOINT.PRODUCTS}`, {

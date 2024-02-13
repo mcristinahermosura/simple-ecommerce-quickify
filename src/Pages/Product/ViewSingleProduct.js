@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Container, Row, Col, Image } from "react-bootstrap";
+import { Button, Container, Row, Col } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getSingleProduct } from "../../api";
 import { CartContext } from "../../context/CartContext";
 import { UserContext } from "../../context/UserContext";
-import { BODY_SHOP_LOGO } from "../../utils/constant";
+
 
 export default function ViewSingleProduct() {
   const { addItem } = useContext(CartContext);
@@ -40,15 +40,7 @@ export default function ViewSingleProduct() {
     <Container className="d-flex align-items-center justify-content-start flex-column mt-5 p-5">
       <Row className="justify-content-center flex-column align-items-center">
         <Col xs={10} sm={8} md={6} lg={3}>
-          <Image
-            src={
-              product?.image?.url.length > 0
-                ? product.image.url
-                : BODY_SHOP_LOGO
-            }
-            thumbnail
-            className="mb-3 mx-auto d-block"
-          />
+
         </Col>
         <Col xs={12} md={8}>
           <div className="product-details">

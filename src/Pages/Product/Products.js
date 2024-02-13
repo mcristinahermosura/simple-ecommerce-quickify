@@ -2,7 +2,6 @@ import React from "react";
 import { Card, Container, Row, Col, Button } from "react-bootstrap";
 import useRetrieveProducts from "../../hooks/useRetrieveProducts";
 import { useNavigate } from "react-router-dom";
-import { BODY_SHOP_LOGO } from "../../utils/constant";
 import { motion } from "framer-motion";
 
 export default function Products() {
@@ -44,21 +43,7 @@ export default function Products() {
                 }}
                 onClick={(e) => viewProduct(e, product._id)}
               >
-                <motion.img
-                  src={
-                    product.image.url?.length > 0
-                      ? product.image.url
-                      : BODY_SHOP_LOGO
-                  }
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    maxWidth: "200px",
-                    margin: "auto",
-                    padding: "0.75rem",
-                  }}
-                  whileHover={{ filter: "brightness(1.1)" }}
-                />
+               
                 <motion.div
                   className="card-body"
                   style={{ height: "50%" }}
