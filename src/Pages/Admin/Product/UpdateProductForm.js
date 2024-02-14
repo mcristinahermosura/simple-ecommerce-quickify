@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 import { Form, FormGroup, Image } from "react-bootstrap";
+import { BODY_SHOP_LOGO } from "../../../utils/constant";
 
 export default function UpdateProductForm({ product }) {
   const reader = new FileReader();
@@ -49,7 +50,6 @@ export default function UpdateProductForm({ product }) {
       errors.push("Stock is required!");
     }
 
-   
     if (
       productName === product?.name &&
       productDescription === product?.description &&
@@ -123,7 +123,9 @@ export default function UpdateProductForm({ product }) {
         <Image
           alt="Product Image"
           id="image-preview"
-          src={product.image.url}
+          src={
+            product.image.url.length > 0 ? product.image.url : BODY_SHOP_LOGO
+          }
           fluid
           className="mt-2"
         />

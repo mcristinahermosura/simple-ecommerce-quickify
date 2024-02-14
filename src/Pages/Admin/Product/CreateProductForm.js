@@ -4,6 +4,7 @@ import { Form } from "react-bootstrap";
 export default function CreateProductForm() {
   const handleCreate = () => {
     const errors = [];
+    const formData = new FormData();
 
     const productName = document.getElementById("productName")?.value.trim();
     const productDescription = document
@@ -38,15 +39,13 @@ export default function CreateProductForm() {
       return Swal.showValidationMessage(errorList);
     }
 
-    const formData = new FormData();
-
     formData.append("name", productName);
     formData.append("description", productDescription);
     formData.append("price", productPrice);
     formData.append("stock", productStock);
     formData.append("image", productImage);
 
-    return formData;
+    return { data: formData };
   };
 
   return {

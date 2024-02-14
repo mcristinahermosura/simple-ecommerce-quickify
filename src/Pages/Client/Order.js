@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Container,
   Row,
@@ -17,41 +17,14 @@ import Swal from "sweetalert2";
 import NoOrder from "../../assets/images/no-orders.png";
 import { updateOrderStatus } from "../../api";
 import { BODY_SHOP_LOGO, ORDER_STATUS } from "../../utils/constant";
-import { useNavigate } from "react-router-dom";
 
 export default function OrderHistory() {
   const { orders, updateOrderCancel } = useContext(OrderContext);
   const token = JSON.parse(localStorage.getItem("token"));
-  const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAdmin) {
-      Swal.fire({
-        title: "For Customers Only! You will be redirected to the homepage.",
-        icon: "error",
-        timer: 2000,
-        showConfirmButton: false,
-      }).then((res) => {
-        res.dismiss === Swal.DismissReason.timer && navigate("/");
-      });
-    }
-    if (!token) {
-      Swal.fire({
-        title:
-          "You need to login to access this page. \n You will be redirected to the login page.",
-        icon: "warning",
-        confirmButtonText: "Login",
-        showCancelButton: false,
-        allowOutsideClick: false,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/login");
-        }
-      });
-    }
-  }, [isAdmin, token, navigate]);
+
+ 
 
   const handleCancelOrder = (id) => {
     Swal.fire({

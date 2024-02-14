@@ -47,7 +47,11 @@ export default function ViewSingleProduct() {
             <h1 className="fw-bold">{product?.name}</h1>
             <p>{product?.description}</p>
             <p>Price: ₱{product?.price?.toFixed(2)}</p>
-            <p>Stock: {product?.stock}</p>
+            <p>
+              {product?.stock === 0
+                ? "OUT OF STOCK"
+                : ` Stock: ${product?.stock}`}
+            </p>
           </div>
         </Col>
       </Row>
@@ -58,7 +62,7 @@ export default function ViewSingleProduct() {
           </Button>
           <Button
             className="btn btn-all"
-            variant={token ? "primary" : "dark"}
+            variant={product.stock === 0 ? "secondary" : "dark"}
             onClick={() =>
               !token
                 ? Swal.fire({
@@ -77,7 +81,7 @@ export default function ViewSingleProduct() {
                   Swal.fire({
                     title: "Item added to cart",
                     icon: "success",
-                    timer: 1500,
+                    timer: 2000,
                     showConfirmButton: false,
                   }))
             }

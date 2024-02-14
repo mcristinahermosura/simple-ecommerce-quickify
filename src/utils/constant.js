@@ -38,7 +38,7 @@ export const ADMIN_TABLES = [
 export const ORDER_STATUS = Object.freeze({
   PENDING: "Pending",
   PROCESSING: "Processing",
-  SHIPPED: "Shipped - In Transit",
+  SHIPPED: "Shipped",
   DELIVERED: "Delivered",
   COMPLETED: "Completed",
   CANCELLED: "Cancelled",

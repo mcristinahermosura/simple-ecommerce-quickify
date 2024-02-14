@@ -11,14 +11,6 @@ export default function Login() {
   const navigate = useNavigate();
   const { updateUser } = useContext(UserContext);
 
-  /**
-   * Flag that determines if the email and password are both non-empty.
-   * We use this for disabling and enabling the button.
-   *
-   * @type {boolean}
-   */
-  const isActive = email !== "" && password !== "";
-
   const authenticate = async (event) => {
     event.preventDefault();
 
@@ -30,13 +22,11 @@ export default function Login() {
 
       if (data.accessToken) {
         updateUser(data);
+        navigate("/");
         Swal.fire({
-          title: "Login Succesfull",
+          title: "Login Succesful!",
           icon: "success",
           text: "Welcome to Quickify!",
-        }).then((res) => {
-          res.isConfirmed &&
-             navigate("/");
         });
         setEmail("");
         setPassword("");
@@ -56,13 +46,13 @@ export default function Login() {
   };
 
   return (
-    <Container className="">
+    <Container>
       <Row>
         <h1 className="titlefont pt-5 mb-3 text-center">Login</h1>
         <Col className=" bg-col col-7 col-md-6 mx-auto shadow-lg rounded">
           <Form onSubmit={(event) => authenticate(event)} className="p-3">
             <Form.Group className="mb-3" controlId="userEmail">
-              <Form>Email address</Form>
+              <Form.Label>Email address</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Enter email"
@@ -86,10 +76,9 @@ export default function Login() {
             </Form.Group>
 
             <Button
-              variant={isActive ? "success" : "dark"}
+              variant={email !== "" && password !== "" ? "success" : "dark"}
               type="submit"
               id="submitBtn"
-              disabled={!isActive}
             >
               Login
             </Button>

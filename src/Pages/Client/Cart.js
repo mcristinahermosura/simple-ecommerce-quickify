@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { CartContext } from "../../context/CartContext";
 import { Alert, Button, Container, Form, Image, Table } from "react-bootstrap";
 import { Plus, Dash } from "react-bootstrap-icons";
@@ -14,38 +14,10 @@ export default function Cart() {
     useContext(CartContext);
   const id = JSON.parse(localStorage.getItem("id"));
   const token = JSON.parse(localStorage.getItem("token"));
-  const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
   const { checkout } = useContext(OrderContext);
   const [shippingAddress, setShippingAddress] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAdmin) {
-      Swal.fire({
-        title: "For Customers Only! You will be redirected to the homepage.",
-        icon: "error",
-        timer: 2000,
-        showConfirmButton: false,
-      }).then((res) => {
-        res.dismiss === Swal.DismissReason.timer && navigate("/");
-      });
-    }
-
-    if (!token) {
-      Swal.fire({
-        title:
-          "You need to login to access this page. Please login first. \n You will be redirected to the login page.",
-        icon: "warning",
-        confirmButtonText: "Login",
-        showCancelButton: false,
-        allowOutsideClick: false,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/login");
-        }
-      });
-    }
-  }, [isAdmin, token, navigate]);
 
   const handleCheckout = (e) => {
     e.preventDefault();

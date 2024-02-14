@@ -2,25 +2,17 @@ import React, { useContext } from "react";
 import { Button, Table } from "react-bootstrap";
 import { OrderContext } from "../../context/OrderContext";
 import Swal from "sweetalert2";
+import { UserContext } from "../../context/UserContext";
 
 export default function OrdersTable() {
+  const { users } = useContext(UserContext);
   const { orders, updateStatus } = useContext(OrderContext);
 
   const handleUpdateOrderStatus = async (orderId, prevStatus) => {
-    if (prevStatus === "Cancelled") {
+    if (["Cancelled", "Delivered", "Completed"].includes(prevStatus)) {
       Swal.fire({
-        title: "Order is already cancelled",
-        text: `You can't update the status of a ${prevStatus.toLowerCase()} order`,
-        icon: "warning",
-        timer: 3000,
-        showConfirmButton: false,
-      });
-      return;
-    }
-    if (prevStatus === "Completed") {
-      Swal.fire({
-        title: "Order is already completed",
-        text: `You can't update the status of a ${prevStatus.toLowerCase()} order`,
+        title: `You can't update the status of a ${prevStatus.toLowerCase()} order`,
+
         icon: "warning",
         timer: 3000,
         showConfirmButton: false,
@@ -36,9 +28,9 @@ export default function OrdersTable() {
         options.Processing = "Processing";
         break;
       case "Processing":
-        options.Shipped = "Shipped - In Transit";
+        options.Shipped = "Shipped";
         break;
-      case "Shipped - In Transit":
+      case "Shipped":
         options.Delivered = "Delivered";
         break;
       default:
@@ -61,6 +53,12 @@ export default function OrdersTable() {
     if (status) {
       updateStatus(orderId, status);
     }
+  };
+
+  const getUserNameOrEmail = (userId) => {
+    const foundUser = users.find((user) => user._id === userId);
+
+    return foundUser.name ?? foundUser.email ?? "";
   };
 
   return (
@@ -86,7 +84,9 @@ export default function OrdersTable() {
             )
             .map((order, index) => (
               <tr key={index}>
-                <td style={{ verticalAlign: "middle" }}>{order.email}</td>
+                <td style={{ verticalAlign: "middle" }}>
+                  {getUserNameOrEmail(order.userId)}
+                </td>
                 <td>
                   <ul>
                     {order.orders.map((product, productIndex) => (
@@ -108,7 +108,13 @@ export default function OrdersTable() {
                 <td style={{ verticalAlign: "middle" }}>{order.orderStatus}</td>
                 <td style={{ verticalAlign: "middle", textAlign: "center" }}>
                   <Button
-                    variant="primary"
+                    variant={
+                      ["Cancelled", "Delivered", "Completed"].includes(
+                        order.orderStatus
+                      )
+                        ? "secondary"
+                        : "primary"
+                    }
                     onClick={() =>
                       handleUpdateOrderStatus(order._id, order.orderStatus)
                     }

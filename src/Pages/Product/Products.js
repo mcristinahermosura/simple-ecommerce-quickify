@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Container, Row, Col, Button } from "react-bootstrap";
+import { Card, Container, Row, Col, Button, Badge } from "react-bootstrap";
 import useRetrieveProducts from "../../hooks/useRetrieveProducts";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -56,9 +56,14 @@ export default function Products() {
                     {product.description}
                   </p>
                   <p className="card-text">₱ {product.price.toFixed(2)}</p>
-                  <p className="card-text">
-                    {`Stock${product.stock > 1 ? "s" : ""}: ${product.stock} `}
-                  </p>
+
+                  <Badge bg={product.stock > 0 ? "success" : "danger"}>
+                    <p className="card-text">
+                      {`Stock${product.stock > 1 ? "s" : ""}: ${
+                        product.stock
+                      } `}
+                    </p>
+                  </Badge>
                 </motion.div>
                 <motion.div
                   className="card-footer d-grid"

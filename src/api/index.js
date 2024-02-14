@@ -78,13 +78,6 @@ export const registerUser = async (user) => {
     },
     body: JSON.stringify(user),
   });
-  if (!response.ok) {
-    return Swal.fire({
-      title: response.json().message,
-      icon: "error",
-      text: response.message,
-    });
-  }
 
   return response.json();
 };

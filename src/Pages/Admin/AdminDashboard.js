@@ -1,6 +1,5 @@
 import { Button, ButtonGroup, Container, ToggleButton } from "react-bootstrap";
-import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import { ADMIN_TABLES } from "../../utils/constant";
 import { CreateProductForm } from "./Product";
@@ -14,29 +13,13 @@ import withReactContent from "sweetalert2-react-content";
 import { UserContext } from "../../context/UserContext";
 
 export default function AdminDashboard() {
-  const navigate = useNavigate();
-  const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
   const token = JSON.parse(localStorage.getItem("token"));
   const [radioValue, setRadioValue] = useState("products");
   const { fetchUsers } = useContext(UserContext);
 
-  useEffect(() => {
-    if (!isAdmin) {
-      Swal.fire({
-        title: "You are not authorized to access this page",
-        icon: "error",
-        timer: 2000,
-        showConfirmButton: false,
-      }).then((res) => {
-        res.dismiss === Swal.DismissReason.timer && navigate("/");
-      });
-    }
-  }, [isAdmin, navigate]);
-
   const handleProductCreation = async (product) => {
     try {
       const data = await createProduct(product, token);
-
       if (data?.error && data.error.length > 0) {
         Swal.fire({
           title: "Error",
@@ -115,8 +98,7 @@ export default function AdminDashboard() {
               })
               .then((result) => {
                 if (result.isConfirmed) {
-                  console.log(result);
-                  handleProductCreation(result.value);
+                  handleProductCreation(result.value.data);
                 }
               })
           }
@@ -134,7 +116,7 @@ export default function AdminDashboard() {
               })
               .then((result) => {
                 if (result.isConfirmed) {
-                  handleUserCreation(result.value);
+                  handleUserCreation(result.value.data);
                 }
               })
           }
