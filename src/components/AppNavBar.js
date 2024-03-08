@@ -2,16 +2,15 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useContext } from "react";
 
-import { UserContext } from "../context/UserContext.js";
 import { Badge } from "react-bootstrap";
-import { CartContext } from "../context/CartContext.js";
 import Swal from "sweetalert2";
+import { useCartContext } from "../context/CartContext";
+import { useUserContext } from "../context/UserContext";
 export default function AppNavBar() {
-  const { cart } = useContext(CartContext);
+  const { cart } = useCartContext();
   const navigate = useNavigate();
-  const { token, removeUser, isAdmin } = useContext(UserContext);
+  const { token, removeUser, isAdmin } = useUserContext();
 
   return (
     <Navbar expand="lg" className="bg-body-secondary">
@@ -22,11 +21,11 @@ export default function AppNavBar() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link as={NavLink} to="/" >
+            <Nav.Link as={NavLink} to="/">
               Home
             </Nav.Link>
 
-            <Nav.Link as={NavLink} to="/products" >
+            <Nav.Link as={NavLink} to="/products">
               Products
             </Nav.Link>
 
@@ -53,7 +52,7 @@ export default function AppNavBar() {
               </>
             )}
             {isAdmin && (
-              <Nav.Link as={NavLink} to="/dashboard" >
+              <Nav.Link as={NavLink} to="/dashboard">
                 Admin Dashboard
               </Nav.Link>
             )}
@@ -61,7 +60,6 @@ export default function AppNavBar() {
             {token !== null ? (
               <>
                 <Nav.Link
-                 
                   as={NavLink}
                   onClick={() =>
                     Swal.fire({
@@ -90,10 +88,10 @@ export default function AppNavBar() {
               </>
             ) : (
               <>
-                <Nav.Link as={NavLink} to="/login"  >
+                <Nav.Link as={NavLink} to="/login">
                   Login
                 </Nav.Link>
-                <Nav.Link as={NavLink} to="/signUp" >
+                <Nav.Link as={NavLink} to="/signUp">
                   Sign up
                 </Nav.Link>
               </>

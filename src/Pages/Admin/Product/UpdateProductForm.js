@@ -1,151 +1,195 @@
 import Swal from "sweetalert2";
+import { useRef, useState, forwardRef, useImperativeHandle } from "react";
 import { Form, FormGroup, Image } from "react-bootstrap";
 import { BODY_SHOP_LOGO } from "../../../utils/constant";
 
-export default function UpdateProductForm({ product }) {
-  const reader = new FileReader();
-  const productName =
-    document.getElementById("productName")?.value.trim() ?? product?.name;
-  const productDescription =
-    document.getElementById("productDescription")?.value.trim() ??
-    product?.description;
-  const productPrice = parseFloat(
-    document.getElementById("productPrice")?.value ?? product?.price ?? null
-  );
-  const productStock = parseInt(
-    document.getElementById("productStock")?.value ?? product?.stock ?? null
-  );
+const UpdateProductForm = forwardRef(({ product }, ref) => {
+  const productImageRef = useRef(null);
+  const [productData, setProductData] = useState({
+    name: product.name,
+    description: product.description,
+    price: product.price,
+    stock: product.stock,
+    image: product.image.url,
+  });
+  const [updateResult, setUpdateResult] = useState(null);
+  const [displayImage, setDisplayImage] = useState(product.image.url);
 
-  let productImage = document.getElementById("productImage")?.files[0];
+  const { name, description, price, stock, image } = productData;
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      reader.onload = function (e) {
-        const imagePreview = document.getElementById("image-preview");
-        imagePreview.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+  const handleInputChange = (e) => {
+    if (e.target.name === "image") {
+      setProductData({
+        ...productData,
+        image: e.target.files[0],
+      });
+      setDisplayImage(URL.createObjectURL(e.target.files[0]));
+    } else {
+      setProductData({
+        ...productData,
+        [e.target.name]: e.target.value,
+      });
     }
-    productImage = file;
+    if (updateResult) setUpdateResult(null);
   };
 
-  const handleUpdate = () => {
-    const formData = new FormData();
+  const handleUpdate = async () => {
     const errors = [];
 
-    if (!productName) {
+    if (!name) {
       errors.push("Name is required!");
     }
 
-    if (!productDescription) {
+    if (!description) {
       errors.push("Description is required!");
     }
 
-    if (isNaN(productPrice) || !productPrice) {
-      errors.push("Price is required!");
+    if (isNaN(stock) || !stock || stock < 0) {
+      errors.push("Stock is required! Please enter a valid number!");
     }
 
-    if (isNaN(productStock) || productStock < 0) {
-      errors.push("Stock is required!");
+    if (isNaN(price) || !price || price <= 0) {
+      errors.push("Price is required! Please enter a valid number!");
     }
 
     if (
-      productName === product?.name &&
-      productDescription === product?.description &&
-      productPrice === product?.price &&
-      productStock === product?.stock &&
-      !productImage
+      name === product.name &&
+      description === product.description &&
+      price === product.price &&
+      stock === product.stock &&
+      image === product.image.url
     ) {
-      return Swal.showValidationMessage(
-        "There's nothing to update. Please change the values."
-      );
+      setUpdateResult({
+        type: "warning",
+        message: "There's nothing to update. Please change the values.",
+      });
+      return;
     }
 
     if (errors.length > 0) {
-      const errorList = errors.join("<br>");
-      return Swal.showValidationMessage(errorList);
+      const errorList = errors.join("\n");
+      console.log(errorList);
+      setUpdateResult({
+        type: "error",
+        message: errorList,
+      });
+      return;
     }
 
-    for (const [key, value] of Object.entries(product)) {
-      if (!["name", "description", "price", "stock", "image"].includes(key))
-        formData.append(key, value);
+    const isConfirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to update the product details.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, update it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        return true;
+      }
+    });
+
+    if (isConfirmed) {
+      const formData = new FormData();
+
+      for (const key in productData) {
+        formData.append(key, productData[key]);
+      }
+
+      return { data: formData, id: product._id };
     }
-
-    formData.append("name", productName);
-    formData.append("description", productDescription);
-    formData.append("price", productPrice);
-    formData.append("stock", productStock);
-    formData.append("image", productImage);
-
-    return { data: formData, id: product._id };
+    // return productData;
   };
 
-  return {
-    html: (
-      <Form id="updateProductForm" className="p-3">
-        <FormGroup>
-          <Form.Label htmlFor="productName">Name:</Form.Label>
-          <Form.Control
-            type="text"
-            id="productName"
-            defaultValue={product.name}
-            required
-          />
-        </FormGroup>
-        <FormGroup>
-          <Form.Label htmlFor="productDescription">Description:</Form.Label>
-          <Form.Control
-            type="text"
-            id="productDescription"
-            defaultValue={product.description}
-            required
-          />
-        </FormGroup>
-        <FormGroup>
-          <Form.Label htmlFor="productPrice">Price:</Form.Label>
-          <Form.Control
-            type="number"
-            id="productPrice"
-            defaultValue={product.price}
-            required
-          />
-        </FormGroup>
-        <FormGroup>
-          <Form.Label htmlFor="productStock">Stock:</Form.Label>
-          <Form.Control
-            type="number"
-            id="productStock"
-            defaultValue={product.stock}
-            required
-          />
-        </FormGroup>
-        <Image
-          alt="Product Image"
-          id="image-preview"
-          src={
-            product.image.url.length > 0 ? product.image.url : BODY_SHOP_LOGO
-          }
-          fluid
-          className="mt-2"
+  const renderUpdateResult = () => {
+    if (updateResult) {
+      const { type, message } = updateResult;
+      if (type === "warning") {
+        return (
+          <div className="alert alert-warning mt-3" role="alert">
+            {message}
+          </div>
+        );
+      } else {
+        return (
+          <div className="alert alert-danger mt-3" role="alert">
+            {message.split("\n").map((error, index) => (
+              <p key={index}>{error}</p>
+            ))}
+          </div>
+        );
+      }
+    }
+    return null;
+  };
+
+  useImperativeHandle(ref, () => ({
+    handleUpdate,
+  }));
+
+  return (
+    <Form id="updateProductForm" className="p-3">
+      <FormGroup>
+        <Form.Label htmlFor="productName">Name:</Form.Label>
+        <Form.Control
+          type="text"
+          name="name"
+          value={name}
+          onChange={handleInputChange}
+          required
         />
-        <FormGroup>
-          <Form.Label htmlFor="productImage">Image:</Form.Label>
-          <Form.Control
-            type={"file"}
-            id="productImage"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-        </FormGroup>
-      </Form>
-    ),
-    title: "Update Product Details",
-    preConfirm: handleUpdate,
-    showCancelButton: true,
-    focusConfirm: false,
-    confirmButtonText: "Update",
-    denyButtonText: "Close",
-    allowOutsideClick: false,
-  };
-}
+      </FormGroup>
+      <FormGroup>
+        <Form.Label htmlFor="productDescription">Description:</Form.Label>
+        <Form.Control
+          type="text"
+          name="description"
+          value={description}
+          onChange={handleInputChange}
+          required
+        />
+      </FormGroup>
+      <FormGroup>
+        <Form.Label htmlFor="productPrice">Price:</Form.Label>
+        <Form.Control
+          type="number"
+          name="price"
+          value={price}
+          onChange={handleInputChange}
+          required
+        />
+      </FormGroup>
+      <FormGroup>
+        <Form.Label htmlFor="productStock">Stock:</Form.Label>
+        <Form.Control
+          type="number"
+          name="stock"
+          value={stock}
+          onChange={handleInputChange}
+          required
+        />
+      </FormGroup>
+      <Image
+        alt="Product Image"
+        id="image-preview"
+        src={displayImage ?? BODY_SHOP_LOGO}
+        fluid
+        className="mt-2"
+      />
+      <FormGroup>
+        <Form.Label htmlFor="productImage">Image:</Form.Label>
+        <Form.Control
+          type={"file"}
+          name="image"
+          accept="image/*"
+          ref={productImageRef}
+          onChange={handleInputChange}
+        />
+      </FormGroup>
+      {renderUpdateResult()}
+    </Form>
+  );
+});
+
+export default UpdateProductForm;

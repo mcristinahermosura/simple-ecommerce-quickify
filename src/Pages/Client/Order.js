@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Row,
@@ -11,20 +11,18 @@ import {
   Nav,
 } from "react-bootstrap";
 
-import { OrderContext } from "../../context/OrderContext";
+import { useOrderContext } from "../../context/OrderContext";
 import { format } from "date-fns";
 import Swal from "sweetalert2";
 import NoOrder from "../../assets/images/no-orders.png";
 import { updateOrderStatus } from "../../api";
 import { BODY_SHOP_LOGO, ORDER_STATUS } from "../../utils/constant";
+import { useUserContext } from "../../context/UserContext";
 
 export default function OrderHistory() {
-  const { orders, updateOrderCancel } = useContext(OrderContext);
-  const token = JSON.parse(localStorage.getItem("token"));
+  const { orders, updateOrderCancel } = useOrderContext();
+  const { token } = useUserContext();
   const [selectedStatus, setSelectedStatus] = useState(null);
-
-
- 
 
   const handleCancelOrder = (id) => {
     Swal.fire({

@@ -1,15 +1,26 @@
-import { Form, Button, Container, Col, Row } from "react-bootstrap";
-import { useState, useContext } from "react";
+import {
+  Form,
+  Button,
+  Container,
+  Col,
+  Row,
+  Accordion,
+  Card,
+  Collapse,
+} from "react-bootstrap";
+import { useState } from "react";
 import Swal from "sweetalert2";
-import { UserContext } from "../context/UserContext.js";
+import { useUserContext } from "../context/UserContext.js";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/index.js";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [clientOpen, setClientOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
   const navigate = useNavigate();
-  const { updateUser } = useContext(UserContext);
+  const { updateUser } = useUserContext();
 
   const authenticate = async (event) => {
     event.preventDefault();
@@ -45,11 +56,19 @@ export default function Login() {
     }
   };
 
+  const handleAdminToggle = () => {
+    setAdminOpen(!adminOpen);
+  };
+
+  const handleClientToggle = () => {
+    setClientOpen(!clientOpen);
+  };
+
   return (
     <Container>
       <Row>
         <h1 className="titlefont pt-5 mb-3 text-center">Login</h1>
-        <Col className=" bg-col col-7 col-md-6 mx-auto shadow-lg rounded">
+        <Col className="bg-col col-10 col-md-6 mx-auto shadow-lg rounded">
           <Form onSubmit={(event) => authenticate(event)} className="p-3">
             <Form.Group className="mb-3" controlId="userEmail">
               <Form.Label>Email address</Form.Label>
@@ -79,10 +98,58 @@ export default function Login() {
               variant={email !== "" && password !== "" ? "success" : "dark"}
               type="submit"
               id="submitBtn"
+              className="w-100"
             >
               Login
             </Button>
           </Form>
+        </Col>
+      </Row>
+
+      <Row className="mt-3 d-flex justify-content-center align-items-center">
+        <Col className="text-center col-10 col-md-4">
+          <Accordion defaultActiveKey="0">
+            <Card>
+              <Card.Header className="accordion-header bg-light shadow-sm">
+                <Button
+                  className="accordion-button collapsed"
+                  type="button"
+                  onClick={handleAdminToggle}
+                  aria-expanded={adminOpen}
+                  aria-controls="admin"
+                  variant="light"
+                >
+                  Admin credentials
+                </Button>
+              </Card.Header>
+              <Collapse in={adminOpen}>
+                <Card.Body className="accordion-body bg-white rounded">
+                  <p className="mb-0">Email: admin@admin.com</p>
+                  <p>Password: admin</p>
+                </Card.Body>
+              </Collapse>
+            </Card>
+            <Card>
+              <Card.Header className="accordion-header  bg-light shadow-sm">
+                <Button
+                  variant="light"
+                  className="accordion-button collapsed "
+                  type="button"
+                  onClick={handleClientToggle}
+                  aria-expanded={clientOpen}
+                  aria-controls="client"
+                >
+                  Client credentials
+                </Button>
+              </Card.Header>
+              <Collapse in={clientOpen}>
+                <Card.Body className="accordion-body bg-white rounded">
+                  <p className="mb-0">Email: client@client.com</p>
+                  <p>Password: client</p>
+                </Card.Body>
+              </Collapse>
+            </Card>
+          </Accordion>
         </Col>
       </Row>
     </Container>

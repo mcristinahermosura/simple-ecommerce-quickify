@@ -1,54 +1,20 @@
-import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const ProtectedRoute = ({ isAuthorized, alert, children }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
+const alertPrompt = async (message) => {
+  const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
+  const defaultTitle = `You are already logged in ${
+    isAdmin ? "as Admin" : ""
+  }!`;
 
-  const redirect = async () => {
-    try {
-      const response = await alert();
-      response && navigate(response);
-    } catch (error) {
-      console.error(error);
-    }
+  const alertOptions = {
+    title: message || defaultTitle,
+    icon: "error",
+    timer: 500,
+    showConfirmButton: false,
+    allowOutsideClick: false,
   };
 
-  useEffect(() => {
-    if (!isAuthorized) redirect();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location, isAuthorized]);
-
-  // If user is not authorized, we return empty fragment
-  if (!isAuthorized) {
-    return <></>;
-  }
-
-  return children;
+  return await Swal.fire(alertOptions);
 };
 
-const alertPrompt = async (redirect, message) => {
-  const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
-  try {
-    const res = await Swal.fire({
-      // Display the message if provided, else display the default message
-      title:
-        message ?? `You are already logged in ${isAdmin ? "as Admin" : ""}!`,
-      icon: "info",
-      timer: 3000,
-      showConfirmButton: false,
-      allowOutsideClick: false,
-    });
-    if (res.dismiss === Swal.DismissReason.timer) {
-      return redirect;
-    }
-
-    return;
-  } catch (error) {}
-};
-
-
-
-export { ProtectedRoute, alertPrompt };
+export { alertPrompt };

@@ -100,3 +100,7 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   );
 };
+
+export const useCartContext = () => {
+  return React.useContext(CartContext);
+};

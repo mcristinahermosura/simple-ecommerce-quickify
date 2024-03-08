@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Button, Table } from "react-bootstrap";
-import { OrderContext } from "../../context/OrderContext";
+import { useOrderContext } from "../../context/OrderContext";
 import Swal from "sweetalert2";
-import { UserContext } from "../../context/UserContext";
+import { useUserContext } from "../../context/UserContext";
 
 export default function OrdersTable() {
-  const { users } = useContext(UserContext);
-  const { orders, updateStatus } = useContext(OrderContext);
+  const { users } = useUserContext();
+  const { orders, updateStatus } = useOrderContext();
 
   const handleUpdateOrderStatus = async (orderId, prevStatus) => {
     if (["Cancelled", "Delivered", "Completed"].includes(prevStatus)) {
@@ -57,8 +57,11 @@ export default function OrdersTable() {
 
   const getUserNameOrEmail = (userId) => {
     const foundUser = users.find((user) => user._id === userId);
-
-    return foundUser.name ?? foundUser.email ?? "";
+    return foundUser && foundUser.name
+      ? foundUser.name
+      : foundUser.email
+      ? foundUser.email
+      : "User name";
   };
 
   return (
@@ -75,7 +78,7 @@ export default function OrdersTable() {
         </tr>
       </thead>
       <tbody>
-        {orders.length > 0 ? (
+        {orders !== undefined && orders.length > 0 ? (
           orders
             .sort(
               (a, b) =>

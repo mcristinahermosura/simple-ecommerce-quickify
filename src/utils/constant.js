@@ -17,16 +17,19 @@ export const ENDPOINT = Object.freeze({
   PRODUCTS_ACTIVE: "products/all-active",
   PRODUCTS_UPDATE: "products/update",
   PRODUCTS_UPDATE_STATUS: "products/update-status",
+  PRODUCTS_DELETE: "products/delete",
   USER: "users",
   USER_SIGNUP: "users/sign-up",
   USER_LOGIN: "users/login",
   USER_DETAILS: "users/details",
   USER_UPDATE: "users/update",
+  USER_DELETE: "users/delete",
   ORDER_CHECKOUT: "orders/checkout",
   ORDER: "orders",
   ORDER_ALL: "orders/all",
   ORDER_CANCEL: "orders/cancel-order",
   ORDER_UPDATE_STATUS: "orders/update-status",
+  ORDER_DELETE: "orders/delete",
 });
 
 export const ADMIN_TABLES = [

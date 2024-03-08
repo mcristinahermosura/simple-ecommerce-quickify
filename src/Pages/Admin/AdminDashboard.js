@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, Container, ToggleButton } from "react-bootstrap";
-import { useContext, useState } from "react";
+import { useRef, useState } from "react";
 import Swal from "sweetalert2";
-import { ADMIN_TABLES } from "../../utils/constant";
+import { ADMIN_TABLES, RESPONSE_STATUS } from "../../utils/constant";
 import { CreateProductForm } from "./Product";
 import ProductTable from "./ProductTable";
 import UsersTable from "./UsersTable";
@@ -10,20 +10,31 @@ import { CreateUserForm } from "./User";
 import "../Layout.css";
 import { createProduct, registerUser } from "../../api";
 import withReactContent from "sweetalert2-react-content";
-import { UserContext } from "../../context/UserContext";
+import { useUserContext } from "../../context/UserContext";
 
 export default function AdminDashboard() {
   const token = JSON.parse(localStorage.getItem("token"));
   const [radioValue, setRadioValue] = useState("products");
-  const { fetchUsers } = useContext(UserContext);
+  const { fetchUsers } = useUserContext();
+  const createProductRef = useRef(null);
+  const handleUserRef = useRef(null);
 
   const handleProductCreation = async (product) => {
     try {
       const data = await createProduct(product, token);
-      if (data?.error && data.error.length > 0) {
+
+      if (data.status === RESPONSE_STATUS.ERROR) {
         Swal.fire({
           title: "Error",
-          text: data.error,
+          text: data.message,
+          icon: "error",
+          timer: 3000,
+          showConfirmButton: false,
+        });
+      } else if (data.status === RESPONSE_STATUS.FAILED) {
+        Swal.fire({
+          title: "Error",
+          text: "Failed to create product",
           icon: "error",
           timer: 3000,
           showConfirmButton: false,
@@ -59,7 +70,11 @@ export default function AdminDashboard() {
           timer: 3000,
           showConfirmButton: false,
         });
-        fetchUsers();
+        await fetchUsers();
+
+        if (radioValue !== "users") {
+          setRadioValue("users");
+        }
       } else {
         Swal.fire({
           title: "Failed to create user",
@@ -73,10 +88,78 @@ export default function AdminDashboard() {
       Swal.fire({
         title: "Failed to create user",
         icon: "error",
-        text: error.message ?? error,
+        text: error.message.length > 0 ? error.message : error,
         timer: 3000,
         showConfirmButton: false,
       });
+    }
+  };
+
+  const handleRefCreate = async () => {
+    const res = await createProductRef.current.handleCreate();
+
+    if (res) {
+      handleProductCreation(res.data);
+    }
+  };
+
+  const handleCreateUserRef = async () => {
+    const res = await handleUserRef.current.handleUserCreation();
+
+    if (res) {
+      handleUserCreation(res.data);
+    }
+  };
+
+  const handleCreateUser = async () => {
+    try {
+      const MySwal = withReactContent(Swal);
+      MySwal.fire({
+        title: "Create User",
+        html: (
+          <div>
+            <CreateUserForm ref={handleUserRef} />
+
+            <div className="d-flex  gap-3 justify-content-center align-items-center mt-5">
+              <Button variant="primary" onClick={handleCreateUserRef}>
+                Create
+              </Button>
+              <Button variant="secondary" onClick={() => MySwal.close()}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ),
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleCreateProduct = async () => {
+    try {
+      const MySwal = withReactContent(Swal);
+      MySwal.fire({
+        title: "Add Product",
+        html: (
+          <div>
+            <CreateProductForm ref={createProductRef} />
+
+            <div className="d-flex  gap-3 justify-content-center align-items-center mt-5">
+              <Button variant="primary" onClick={handleRefCreate}>
+                Create
+              </Button>
+              <Button variant="secondary" onClick={() => MySwal.close()}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ),
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
@@ -91,38 +174,14 @@ export default function AdminDashboard() {
 
       <div className="d-grid gap-2 d-flex justify-content-center pb-4">
         <Button
-          onClick={async () =>
-            await withReactContent(Swal)
-              .fire({
-                ...CreateProductForm(),
-              })
-              .then((result) => {
-                if (result.isConfirmed) {
-                  handleProductCreation(result.value.data);
-                }
-              })
-          }
+          onClick={handleCreateProduct}
           variant="outline-primary"
           size="sm"
         >
           Add New Product
         </Button>
 
-        <Button
-          onClick={async () =>
-            await withReactContent(Swal)
-              .fire({
-                ...CreateUserForm(),
-              })
-              .then((result) => {
-                if (result.isConfirmed) {
-                  handleUserCreation(result.value.data);
-                }
-              })
-          }
-          variant="outline-primary"
-          size="sm"
-        >
+        <Button onClick={handleCreateUser} variant="outline-primary" size="sm">
           Add New User
         </Button>
       </div>

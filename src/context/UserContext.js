@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Swal from "sweetalert2";
 import { getAllUsers } from "../api";
 
@@ -35,7 +35,7 @@ export const UserProvider = ({ children }) => {
       Swal.fire({
         title: "Failed to retrieve users",
         icon: "error",
-        text: error.message ?? error,
+        text: error.message.length > 0 ? error.message : error,
         timer: 3000,
         showConfirmButton: false,
       });
@@ -92,4 +92,8 @@ export const UserProvider = ({ children }) => {
       {children}
     </UserContext.Provider>
   );
+};
+
+export const useUserContext = () => {
+  return useContext(UserContext);
 };

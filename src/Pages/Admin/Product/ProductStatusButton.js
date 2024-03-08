@@ -10,6 +10,7 @@ export default function ProductStatusButton({ product, onUpdateAvailability }) {
     Swal.fire({
       title: confirmationMessage,
       icon: "warning",
+      showCancelButton: true,
     }).then((result) => {
       if (result.isConfirmed) {
         onUpdateAvailability(product);

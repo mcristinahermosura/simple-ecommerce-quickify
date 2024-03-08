@@ -26,7 +26,7 @@ export const OrderProvider = ({ children }) => {
   const fetchOrders = async () => {
     try {
       const result = await getOrders();
-      if (result.status === RESPONSE_STATUS.FAILED)
+      if (result.status === RESPONSE_STATUS.FAILED) {
         Swal.fire({
           title: "Failed to retrieve orders",
           icon: "error",
@@ -34,12 +34,17 @@ export const OrderProvider = ({ children }) => {
           timer: 3000,
           showConfirmButton: false,
         });
-      else setOrders(result.data);
+
+        setOrders([]);
+        return;
+      }
+
+      setOrders(result.data);
     } catch (error) {
       Swal.fire({
         title: "Failed to retrieve orders",
         icon: "error",
-        text: error.message ?? error,
+        text: error.message.length > 0 ? error.message : error,
         timer: 3000,
         showConfirmButton: false,
       });
@@ -70,7 +75,7 @@ export const OrderProvider = ({ children }) => {
       Swal({
         title: "Failed to cancel order",
         icon: "error",
-        text: error.message ?? error,
+        text: error.message.length > 0 ? error.message : error,
         timer: 3000,
         showConfirmButton: false,
       });
@@ -102,7 +107,7 @@ export const OrderProvider = ({ children }) => {
       Swal({
         title: "Failed to update order status",
         icon: "error",
-        text: error.message ?? error,
+        text: error.message.length > 0 ? error.message : error,
         timer: 3000,
         showConfirmButton: false,
       });
@@ -148,7 +153,7 @@ export const OrderProvider = ({ children }) => {
       Swal.fire({
         title: "Failed to place order",
         icon: "error",
-        text: error.message ?? error,
+        text: error.message.length > 0 ? error.message : error,
         timer: 3000,
         showConfirmButton: false,
       });
@@ -176,4 +181,8 @@ export const OrderProvider = ({ children }) => {
       {children}
     </OrderContext.Provider>
   );
+};
+
+export const useOrderContext = () => {
+  return useContext(OrderContext);
 };

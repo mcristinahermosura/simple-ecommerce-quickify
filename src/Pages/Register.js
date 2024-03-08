@@ -29,7 +29,7 @@ export default function Register() {
         name,
       });
 
-      if (data.success === RESPONSE_STATUS.SUCCESS) {
+      if (data.status.success === RESPONSE_STATUS.SUCCESS) {
         Swal.fire({
           title: "Thank you for registering",
           icon: "success",

@@ -1,4 +1,3 @@
-import Swal from "sweetalert2";
 import { ENDPOINT } from "../utils/constant";
 
 const BASE_API = process.env.REACT_APP_API_BASE_URL;
@@ -15,15 +14,16 @@ export const createProduct = async (formData, token) => {
   return response.json();
 };
 
-export const updateProductDetails = async (product, token, id) => {
+export const updateProductDetails = async (product, token) => {
+  // product.data is the form data
   const response = await fetch(
-    `${BASE_API}/${ENDPOINT.PRODUCTS_UPDATE}/${id}`,
+    `${BASE_API}/${ENDPOINT.PRODUCTS_UPDATE}/${product.id}`,
     {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      body: product,
+      body: product.data,
     }
   );
 
@@ -168,6 +168,45 @@ export const updateUserRole = async (userId, role, token) => {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ id: userId, isAdmin: role }),
+  });
+
+  return response.json();
+};
+
+export const deleteUser = async (id, token) => {
+  const response = await fetch(`${BASE_API}/${ENDPOINT.USER_DELETE}/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.json();
+};
+
+export const deleteProduct = async (id, token) => {
+  const response = await fetch(
+    `${BASE_API}/${ENDPOINT.PRODUCTS_DELETE}/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.json();
+};
+
+export const deleteOrder = async (id, token) => {
+  const response = await fetch(`${BASE_API}/${ENDPOINT.ORDER_DELETE}/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   return response.json();

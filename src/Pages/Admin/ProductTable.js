@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Button, Table } from "react-bootstrap";
 import Swal from "sweetalert2";
 import useRetrieveProducts from "../../hooks/useRetrieveProducts";
-import { updateProductStatus, updateProductDetails } from "../../api";
+import {
+  updateProductStatus,
+  updateProductDetails,
+  deleteProduct,
+} from "../../api";
 import { RESPONSE_STATUS } from "../../utils/constant";
 import { UpdateProductForm, ProductStatusButton } from "./Product";
 import withReactContent from "sweetalert2-react-content";
@@ -10,6 +14,7 @@ import withReactContent from "sweetalert2-react-content";
 export default function ProductTable() {
   const { products, refetchProducts } = useRetrieveProducts();
   const token = JSON.parse(localStorage.getItem("token"));
+  const updateRef = useRef(null);
 
   const updateProductAvailability = async (product) => {
     try {
@@ -39,9 +44,9 @@ export default function ProductTable() {
     }
   };
 
-  const updateProduct = async (product, id) => {
+  const updateProduct = async (product) => {
     try {
-      const data = await updateProductDetails(product, token, id);
+      const data = await updateProductDetails(product, token);
       if (data.status === RESPONSE_STATUS.SUCCESS) {
         Swal.fire({
           title: "Product Updated!",
@@ -67,23 +72,89 @@ export default function ProductTable() {
       });
     }
   };
+
+  const handleRefUpdate = async () => {
+    const res = await updateRef.current.handleUpdate();
+
+    if (res) {
+      updateProduct(res);
+    }
+  };
+
   const handleUpdate = async (product) => {
     try {
       if (product) {
-        await withReactContent(Swal)
-          .fire({
-            ...UpdateProductForm({ product }),
-          })
-          .then((result) => {
-            if (result.isConfirmed) {
-              updateProduct(result.value.data, result.value.id);
-            }
-          });
+        const MySwal = withReactContent(Swal);
+        MySwal.fire({
+          title: "Update Product",
+          html: (
+            <div>
+              <UpdateProductForm product={product} ref={updateRef} />
+
+              <div className="d-flex  gap-3 justify-content-center align-items-center mt-5">
+                <Button variant="primary" onClick={handleRefUpdate}>
+                  Update
+                </Button>
+                <Button variant="secondary" onClick={() => MySwal.close()}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ),
+          showConfirmButton: false,
+        });
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   };
+
+  const handleDeleteProduct = (id, name) => {
+    try {
+      Swal.fire({
+        title: `Are you sure you want to delete ${name}?`,
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const res = await deleteProduct(id, token);
+
+          if (res.status === RESPONSE_STATUS.SUCCESS) {
+            refetchProducts();
+            Swal.fire({
+              title: "Product deleted successfully!",
+              icon: "success",
+              timer: 3000,
+              showConfirmButton: false,
+            });
+          } else {
+            Swal.fire({
+              title: "Failed to delete product",
+              icon: "error",
+              timer: 3000,
+              showConfirmButton: false,
+            });
+          }
+        }
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Failed to delete product",
+        icon: "error",
+        text: error.message.length > 0 ? error.message : error,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    }
+  };
+
+  const sortedProducts = products.sort((a, b) => {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
 
   return (
     <Table striped bordered hover responsive variant="secondary">
@@ -99,8 +170,8 @@ export default function ProductTable() {
         </tr>
       </thead>
       <tbody>
-        {products.length > 0 ? (
-          products?.map((product, index) => {
+        {sortedProducts.length > 0 ? (
+          sortedProducts?.map((product, index) => {
             return (
               <tr key={index} className="text-center ">
                 <td style={{ verticalAlign: "middle" }}>
@@ -127,6 +198,15 @@ export default function ProductTable() {
                     product={product}
                     onUpdateAvailability={updateProductAvailability}
                   />
+                  <Button
+                    variant="dark"
+                    className="my-2"
+                    onClick={() =>
+                      handleDeleteProduct(product._id, product.name)
+                    }
+                  >
+                    Delete
+                  </Button>
                 </td>
               </tr>
             );

@@ -1,23 +1,22 @@
-import React, { useContext, useState } from "react";
-import { CartContext } from "../../context/CartContext";
+import React, { useState } from "react";
+import { useCartContext } from "../../context/CartContext";
 import { Alert, Button, Container, Form, Image, Table } from "react-bootstrap";
 import { Plus, Dash } from "react-bootstrap-icons";
 
 import { useNavigate } from "react-router-dom";
 
 import Swal from "sweetalert2";
-import { OrderContext } from "../../context/OrderContext";
 import emptyCart from "../../assets/images/empty-cart.png";
+import { useUserContext } from "../../context/UserContext";
 
 export default function Cart() {
-  const { cart, removeItem, increase, decrease, clearCart } =
-    useContext(CartContext);
+  const { cart, removeItem, increase, decrease, clearCart } = useCartContext();
+  const { checkout } = useUserContext();
   const id = JSON.parse(localStorage.getItem("id"));
   const token = JSON.parse(localStorage.getItem("token"));
-  const { checkout } = useContext(OrderContext);
+
   const [shippingAddress, setShippingAddress] = useState("");
   const navigate = useNavigate();
-
 
   const handleCheckout = (e) => {
     e.preventDefault();
@@ -159,7 +158,9 @@ export default function Cart() {
             <tr style={{}}>
               <td colSpan="5" className="text-center">
                 <Alert variant="warning">
-                  <Alert.Heading className="fw-bold">Your cart is empty!</Alert.Heading>
+                  <Alert.Heading className="fw-bold">
+                    Your cart is empty!
+                  </Alert.Heading>
                   <p>
                     You have not added any items to your cart yet. Please browse
                     our products and add some to your cart today.
